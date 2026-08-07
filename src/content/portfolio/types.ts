@@ -92,6 +92,8 @@ export type Project = {
     backendRepository?: string;
     live?: string;
     demo?: string;
+    linkedinPost?: string;
+    certificate?: string;
   };
   featured?: boolean;
 };

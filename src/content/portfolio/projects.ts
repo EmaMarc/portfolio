@@ -20,7 +20,8 @@ export const projects: readonly Project[] = [
     links: {
       repository:
         "https://github.com/Juan-Ignacio-Bordignon/Innova-Lav-grupo-5/tree/frontend",
-      demo: "https://www.linkedin.com/feed/update/urn:li:activity:7490952228350894080/",
+      linkedinPost:
+        "https://www.linkedin.com/feed/update/urn:li:activity:7490952228350894080/",
     },
     featured: true,
   },
@@ -45,7 +46,8 @@ export const projects: readonly Project[] = [
     links: {
       frontendRepository: "https://github.com/juanmasisti/Alquileres-Front",
       backendRepository: "https://github.com/facu-carri/Alquileres-Back",
-      demo: "https://www.linkedin.com/feed/update/urn:li:activity:7491195807241764864/",
+      linkedinPost:
+        "https://www.linkedin.com/feed/update/urn:li:activity:7491195807241764864/",
     },
     featured: true,
   },
@@ -96,6 +98,7 @@ export const projects: readonly Project[] = [
     highlights: [],
     links: {
       repository: "https://github.com/EmaMarc/forohub",
+      certificate: "https://lnkd.in/p/dztk8nU6",
     },
   },
   {
@@ -119,7 +122,8 @@ export const projects: readonly Project[] = [
     technologies: [],
     highlights: [],
     links: {
-      demo: "https://www.linkedin.com/feed/update/urn:li:activity:7266954231939518465/",
+      linkedinPost:
+        "https://www.linkedin.com/feed/update/urn:li:activity:7266954231939518465/",
     },
   },
   {
@@ -139,7 +143,8 @@ export const projects: readonly Project[] = [
     technologies: [],
     highlights: [],
     links: {
-      demo: "https://www.linkedin.com/feed/update/urn:li:activity:7199908939172392961/",
+      linkedinPost:
+        "https://www.linkedin.com/feed/update/urn:li:activity:7199908939172392961/",
     },
   },
 ];
