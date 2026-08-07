@@ -19,6 +19,31 @@ export type VideoAsset = {
   height: number;
 };
 
+export type Education = {
+  id: string;
+  institution: string;
+  title: LocalizedText;
+  period: {
+    start: string;
+    end?: string;
+  };
+};
+
+export type Certification = {
+  id: string;
+  name: LocalizedText;
+  issuer: LocalizedText;
+  year: number;
+  hours?: number;
+};
+
+export type Language = {
+  id: string;
+  name: LocalizedText;
+  proficiency: LocalizedText;
+  note?: LocalizedText;
+};
+
 export type Profile = {
   name: string;
   professionalTitle: LocalizedText;
@@ -30,6 +55,9 @@ export type Profile = {
     github?: string;
     linkedin?: string;
   };
+  education: readonly Education[];
+  certifications: readonly Certification[];
+  languages: readonly Language[];
 };
 
 export type Experience = {
