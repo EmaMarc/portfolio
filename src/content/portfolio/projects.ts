@@ -61,6 +61,58 @@ export const projects: readonly Project[] = [
     featured: true,
   },
   {
+    id: "api-rest-tt",
+    title: "API REST - Gestión de Productos",
+    year: 2025,
+    role: {
+      es: "Desarrollador Backend",
+      en: "Backend Developer",
+    },
+    technologies: ["Node.js", "Express", "Firebase Firestore", "JWT"],
+    highlights: [],
+    links: {
+      repository: "https://github.com/EmaMarc/api-rest-TT",
+      live: "https://api-rest-tt.vercel.app",
+    },
+  },
+  {
+    id: "forohub",
+    title: "ForoHub",
+    year: 2025,
+    role: {
+      es: "Desarrollador Backend",
+      en: "Backend Developer",
+    },
+    technologies: [
+      "Java 17",
+      "Spring Boot 3.4.1",
+      "Spring Security",
+      "Spring Data JPA",
+      "MySQL",
+      "Flyway",
+      "JWT",
+      "OpenAPI",
+    ],
+    highlights: [],
+    links: {
+      repository: "https://github.com/EmaMarc/forohub",
+    },
+  },
+  {
+    id: "php-api-rest",
+    title: "PHP API REST",
+    year: 2025,
+    role: {
+      es: "Desarrollador Backend",
+      en: "Backend Developer",
+    },
+    technologies: ["PHP", "Slim 4", "MySQL 8", "Docker Compose", "Composer"],
+    highlights: [],
+    links: {
+      repository: "https://github.com/EmaMarc/PHP-API-Rest",
+    },
+  },
+  {
     id: "ai-chatbot",
     title: "AI ChatBot",
     year: 2024,
