@@ -90,7 +90,24 @@ export const projects: readonly Project[] = [
     title: "Mythica Books",
     year: 2024,
     technologies: [],
-    highlights: [],
+    summary: {
+      es: "Proyecto personal de e-commerce de libros desarrollado con React, enfocado en construir una experiencia de catálogo completa y explorar patrones de composición, manejo de estado e interacción en el frontend.",
+      en: "Personal book e-commerce project built with React, focused on creating a complete catalog experience and exploring composition, state management, and frontend interaction patterns.",
+    },
+    highlights: [
+      {
+        es: "Construí una experiencia de catálogo con búsqueda, filtros por categoría y precio, gestión de productos y un carrito persistente mediante LocalStorage.",
+        en: "Built a catalog experience with search, category and price filters, product management, and a shopping cart persisted through LocalStorage.",
+      },
+      {
+        es: "Organicé el estado compartido con Context API y custom hooks, utilizando componentes reutilizables para mantener separadas las distintas responsabilidades de la interfaz.",
+        en: "Organized shared state with Context API and custom hooks, using reusable components to keep different interface responsibilities separated.",
+      },
+      {
+        es: "Implementé una interfaz responsive con Tailwind CSS e interacciones como modales y notificaciones, junto con integración de APIs y consideraciones básicas de accesibilidad y SEO.",
+        en: "Implemented a responsive interface with Tailwind CSS and interactions such as modals and notifications, along with API integration and basic accessibility and SEO considerations.",
+      },
+    ],
     links: {
       repository: "https://github.com/EmaMarc/React_eCommerce",
     },
