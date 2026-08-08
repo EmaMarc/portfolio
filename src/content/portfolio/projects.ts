@@ -168,7 +168,24 @@ export const projects: readonly Project[] = [
       "JWT",
       "OpenAPI",
     ],
-    highlights: [],
+    summary: {
+      es: "API REST para un foro desarrollada con Java y Spring Boot como parte del Challenge ForoHub de Alura Latam. Construí el backend alrededor de tópicos, respuestas, usuarios y cursos, incorporando autenticación, persistencia relacional, migraciones de base de datos y documentación de la API.",
+      en: "REST API for a forum built with Java and Spring Boot as part of Alura Latam's ForoHub Challenge. I built the backend around topics, responses, users, and courses, incorporating authentication, relational persistence, database migrations, and API documentation.",
+    },
+    highlights: [
+      {
+        es: "Implementé recursos para tópicos, respuestas, usuarios y cursos, organizando el código entre controllers, dominio e infraestructura.",
+        en: "Implemented resources for topics, responses, users, and courses, organizing the code across controllers, domain, and infrastructure.",
+      },
+      {
+        es: "Configuré autenticación y control de acceso con Spring Security y JWT, separando la lógica de seguridad dentro de componentes de infraestructura dedicados.",
+        en: "Configured authentication and access control with Spring Security and JWT, separating security logic into dedicated infrastructure components.",
+      },
+      {
+        es: "Gestioné la persistencia con Spring Data JPA y MySQL, versioné cambios del esquema mediante Flyway y documenté la API utilizando OpenAPI con Springdoc.",
+        en: "Managed persistence with Spring Data JPA and MySQL, versioned schema changes with Flyway, and documented the API using OpenAPI with Springdoc.",
+      },
+    ],
     links: {
       repository: "https://github.com/EmaMarc/forohub",
       certificate: "https://lnkd.in/p/dztk8nU6",
