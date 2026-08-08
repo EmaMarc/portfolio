@@ -16,7 +16,24 @@ export const projects: readonly Project[] = [
       "React Navigation",
       "AsyncStorage",
     ],
-    highlights: [],
+    summary: {
+      es: "Producto educativo móvil para el aprendizaje de Lengua de Señas Argentina (LSA), con una experiencia centrada en contenido, práctica y seguimiento del progreso. Trabajé como Frontend Developer y Frontend Lead, desarrollando flujos clave de la aplicación e integrando el frontend con servicios backend.",
+      en: "Mobile educational product focused on learning Argentine Sign Language (LSA), with an experience centered on content, practice, and progress tracking. I worked as a Frontend Developer and Frontend Lead, building key application flows and integrating the frontend with backend services.",
+    },
+    highlights: [
+      {
+        es: "Desarrollé flujos para autenticación, onboarding, módulos, lecciones, ejercicios, favoritos, perfil y seguimiento del progreso.",
+        en: "Developed flows for authentication, onboarding, modules, lessons, exercises, favorites, profile, and progress tracking.",
+      },
+      {
+        es: "Integré APIs REST y autenticación basada en tokens con manejo de estados de carga, error y respuestas vacías, e implementé navegación tipada con React Navigation y almacenamiento local con AsyncStorage.",
+        en: "Integrated REST APIs and token-based authentication with loading, error, and empty-state handling, and implemented typed navigation with React Navigation and local storage using AsyncStorage.",
+      },
+      {
+        es: "Coordiné tareas y criterios técnicos del equipo frontend, colaboré con backend y QA mediante feature branches y pull requests, y validé integraciones con TypeScript y Expo Doctor.",
+        en: "Coordinated tasks and technical criteria for the frontend team, collaborated with backend and QA through feature branches and pull requests, and validated integrations using TypeScript and Expo Doctor.",
+      },
+    ],
     links: {
       repository:
         "https://github.com/Juan-Ignacio-Bordignon/Innova-Lav-grupo-5/tree/frontend",
