@@ -59,7 +59,24 @@ export const projects: readonly Project[] = [
       "JWT",
       "Mercado Pago",
     ],
-    highlights: [],
+    summary: {
+      es: "Aplicación web para la gestión y alquiler de maquinaria desarrollada durante una práctica profesional en la UNLP. Trabajé en el frontend con Angular, construyendo flujos de gestión e integrando la interfaz con un backend REST desarrollado con NestJS.",
+      en: "Web application for machinery management and rental developed during a professional internship at UNLP. I worked on the frontend with Angular, building management flows and integrating the interface with a REST backend developed with NestJS.",
+    },
+    highlights: [
+      {
+        es: "Desarrollé funcionalidades de autenticación, registro, recuperación de contraseña, perfiles, usuarios, maquinaria, reservas, alquileres y estadísticas.",
+        en: "Developed authentication, registration, password recovery, profiles, users, machinery, reservations, rentals, and statistics features.",
+      },
+      {
+        es: "Integré el frontend con APIs REST para flujos protegidos mediante JWT y roles, además de funcionalidades relacionadas con imágenes y pagos mediante Mercado Pago.",
+        en: "Integrated the frontend with REST APIs for flows protected by JWT and roles, along with functionality related to images and payments through Mercado Pago.",
+      },
+      {
+        es: "Organicé el frontend mediante páginas, servicios, modelos, guards y componentes reutilizables, utilizando TypeScript, RxJS y un flujo de trabajo colaborativo con Git sobre la rama develop.",
+        en: "Structured the frontend using pages, services, models, guards, and reusable components, working with TypeScript, RxJS, and a collaborative Git workflow based on the develop branch.",
+      },
+    ],
     links: {
       frontendRepository: "https://github.com/juanmasisti/Alquileres-Front",
       backendRepository: "https://github.com/facu-carri/Alquileres-Back",
