@@ -89,7 +89,12 @@ export const projects: readonly Project[] = [
     id: "mythica-books",
     title: "Mythica Books",
     year: 2024,
-    technologies: [],
+    technologies: [
+      "React",
+      "Tailwind CSS",
+      "Context API",
+      "LocalStorage",
+    ],
     summary: {
       es: "Proyecto personal de e-commerce de libros desarrollado con React, enfocado en construir una experiencia de catálogo completa y explorar patrones de composición, manejo de estado e interacción en el frontend.",
       en: "Personal book e-commerce project built with React, focused on creating a complete catalog experience and exploring composition, state management, and frontend interaction patterns.",
