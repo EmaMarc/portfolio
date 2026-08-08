@@ -200,7 +200,24 @@ export const projects: readonly Project[] = [
       en: "Backend Developer",
     },
     technologies: ["PHP", "Slim 4", "MySQL 8", "Docker Compose", "Composer"],
-    highlights: [],
+    summary: {
+      es: "Backend REST desarrollado en PHP con Slim 4 para gestionar usuarios, canchas, reservas y participantes. Construí la API sobre MySQL e incorporé autenticación basada en tokens, reglas de negocio para la gestión de reservas y un entorno de desarrollo reproducible con Docker Compose.",
+      en: "REST backend built in PHP with Slim 4 to manage users, courts, bookings, and participants. I built the API on top of MySQL and incorporated token-based authentication, business rules for booking management, and a reproducible development environment with Docker Compose.",
+    },
+    highlights: [
+      {
+        es: "Implementé rutas y módulos para autenticación, usuarios, canchas, reservas y participantes, exponiendo las operaciones mediante respuestas JSON y métodos HTTP.",
+        en: "Implemented routes and modules for authentication, users, courts, bookings, and participants, exposing operations through JSON responses and HTTP methods.",
+      },
+      {
+        es: "Incorporé autenticación mediante tokens Bearer y middleware para proteger operaciones, junto con validaciones de dominio para reservas, participantes y conflictos de horarios.",
+        en: "Added Bearer token authentication and middleware to protect operations, along with domain validations for bookings, participants, and scheduling conflicts.",
+      },
+      {
+        es: "Configuré la persistencia con MySQL 8 y consultas preparadas mediante PDO, y organicé el entorno con Docker Compose y Composer para levantar la aplicación y sus servicios asociados.",
+        en: "Configured persistence with MySQL 8 and prepared queries through PDO, and organized the environment with Docker Compose and Composer to run the application and its supporting services.",
+      },
+    ],
     links: {
       repository: "https://github.com/EmaMarc/PHP-API-Rest",
     },
