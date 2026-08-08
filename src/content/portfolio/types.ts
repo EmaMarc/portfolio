@@ -77,6 +77,7 @@ export type Project = {
   id: string;
   title: string;
   year: number;
+  section: "frontend" | "backend" | "other";
   role?: LocalizedText;
   summary?: LocalizedText;
   technologies: readonly string[];
@@ -95,5 +96,4 @@ export type Project = {
     linkedinPost?: string;
     certificate?: string;
   };
-  featured?: boolean;
 };

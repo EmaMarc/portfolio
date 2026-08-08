@@ -5,6 +5,7 @@ export const projects: readonly Project[] = [
     id: "con-tacto",
     title: "Con=Tacto",
     year: 2026,
+    section: "frontend",
     role: {
       es: "Frontend Developer / Líder Frontend",
       en: "Frontend Developer / Frontend Lead",
@@ -40,12 +41,12 @@ export const projects: readonly Project[] = [
       linkedinPost:
         "https://www.linkedin.com/feed/update/urn:li:activity:7490952228350894080/",
     },
-    featured: true,
   },
   {
     id: "manny-maquinarias",
     title: "Manny Maquinarias",
     year: 2025,
+    section: "frontend",
     role: {
       es: "Frontend Developer",
       en: "Frontend Developer",
@@ -83,12 +84,12 @@ export const projects: readonly Project[] = [
       linkedinPost:
         "https://www.linkedin.com/feed/update/urn:li:activity:7491195807241764864/",
     },
-    featured: true,
   },
   {
     id: "mythica-books",
     title: "Mythica Books",
     year: 2024,
+    section: "frontend",
     technologies: [
       "React",
       "Tailwind CSS",
@@ -116,12 +117,12 @@ export const projects: readonly Project[] = [
     links: {
       repository: "https://github.com/EmaMarc/React_eCommerce",
     },
-    featured: true,
   },
   {
     id: "api-rest-tt",
     title: "API REST - Gestión de Productos",
     year: 2025,
+    section: "backend",
     role: {
       es: "Desarrollador Backend",
       en: "Backend Developer",
@@ -154,6 +155,7 @@ export const projects: readonly Project[] = [
     id: "forohub",
     title: "ForoHub",
     year: 2025,
+    section: "backend",
     role: {
       es: "Desarrollador Backend",
       en: "Backend Developer",
@@ -195,6 +197,7 @@ export const projects: readonly Project[] = [
     id: "php-api-rest",
     title: "PHP API REST",
     year: 2025,
+    section: "backend",
     role: {
       es: "Desarrollador Backend",
       en: "Backend Developer",
@@ -226,6 +229,7 @@ export const projects: readonly Project[] = [
     id: "ai-chatbot",
     title: "AI ChatBot",
     year: 2024,
+    section: "other",
     technologies: [
       "Streamlit",
       "Groq",
@@ -244,6 +248,7 @@ export const projects: readonly Project[] = [
     id: "nutriguia",
     title: "Nutriguía",
     year: 2021,
+    section: "other",
     technologies: [
       "HTML",
       "CSS",
@@ -263,6 +268,7 @@ export const projects: readonly Project[] = [
     id: "barberhood",
     title: "Barberhood",
     year: 2021,
+    section: "other",
     technologies: [
       "HTML",
       "CSS",
