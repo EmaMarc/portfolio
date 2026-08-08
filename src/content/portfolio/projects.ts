@@ -127,7 +127,24 @@ export const projects: readonly Project[] = [
       en: "Backend Developer",
     },
     technologies: ["Node.js", "Express", "Firebase Firestore", "JWT"],
-    highlights: [],
+    summary: {
+      es: "API REST para la gestión de productos desarrollada como proyecto final integrador de una formación Backend en Node.js. Construí el servicio con Express y Firebase Firestore, cubriendo operaciones de consulta y administración de productos junto con autenticación para las rutas protegidas.",
+      en: "REST API for product management developed as the final integrative project of a Backend training program in Node.js. I built the service with Express and Firebase Firestore, covering product querying and management operations together with authentication for protected routes.",
+    },
+    highlights: [
+      {
+        es: "Implementé endpoints para listar productos, buscar por nombre, consultar por ID y realizar operaciones de creación, actualización y eliminación.",
+        en: "Implemented endpoints to list products, search by name, retrieve products by ID, and perform create, update, and delete operations.",
+      },
+      {
+        es: "Protegí las operaciones de escritura mediante autenticación JWT, utilizando un flujo de login y middleware para validar tokens enviados mediante el header Authorization.",
+        en: "Protected write operations with JWT authentication, using a login flow and middleware to validate tokens sent through the Authorization header.",
+      },
+      {
+        es: "Organicé el backend separando controllers, models, services, routes y middlewares, con Firebase Firestore como capa de persistencia de los productos.",
+        en: "Structured the backend into controllers, models, services, routes, and middlewares, using Firebase Firestore as the persistence layer for product data.",
+      },
+    ],
     links: {
       repository: "https://github.com/EmaMarc/api-rest-TT",
       live: "https://api-rest-tt.vercel.app",
