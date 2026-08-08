@@ -226,7 +226,14 @@ export const projects: readonly Project[] = [
     id: "ai-chatbot",
     title: "AI ChatBot",
     year: 2024,
-    technologies: [],
+    technologies: [
+      "Streamlit",
+      "Groq",
+    ],
+    summary: {
+      es: "Chatbot interactivo desarrollado con Streamlit y Groq para explorar integración de modelos de IA y gestión del historial de conversación.",
+      en: "Interactive chatbot built with Streamlit and Groq to explore AI model integration and conversation history management.",
+    },
     highlights: [],
     links: {
       linkedinPost:
@@ -237,17 +244,34 @@ export const projects: readonly Project[] = [
     id: "nutriguia",
     title: "Nutriguía",
     year: 2021,
-    technologies: [],
+    technologies: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+    ],
+    summary: {
+      es: "Proyecto web de recetas y nutrición desarrollado con HTML, CSS y JavaScript durante una formación frontend.",
+      en: "Recipes and nutrition web project built with HTML, CSS, and JavaScript during a frontend training program.",
+    },
     highlights: [],
     links: {
       repository: "https://github.com/EmaMarc/CaC_Nutriguia.github.io",
+      live: "https://emmaakai.github.io/CaC_Nutriguia.github.io/",
     },
   },
   {
     id: "barberhood",
     title: "Barberhood",
     year: 2021,
-    technologies: [],
+    technologies: [
+      "HTML",
+      "CSS",
+      "JavaScript",
+    ],
+    summary: {
+      es: "Landing page para una peluquería desarrollada con HTML, CSS y JavaScript como uno de mis primeros proyectos frontend.",
+      en: "Barbershop landing page built with HTML, CSS, and JavaScript as one of my early frontend projects.",
+    },
     highlights: [],
     links: {
       linkedinPost:
