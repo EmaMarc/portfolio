@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { experiences, profile, projects } from "@/content/portfolio";
 import type { Education, Experience, Locale, Project } from "@/content/portfolio";
 
@@ -63,7 +62,7 @@ const copy = {
     present: "Actualidad",
     primaryCta: "Explorar proyectos",
     portraitAlt: "Retrato de Emanuel Marcello",
-    secondaryCta: "Contacto",
+    secondaryCta: "Hablemos",
     selectedCredentials: "Credenciales seleccionadas",
     selectedContributions: "Contribuciones principales",
     stack: "Stack",
@@ -106,9 +105,9 @@ const copy = {
     moreOnGithub: "More on GitHub",
     otherWork: "Other Work",
     present: "Present",
-    primaryCta: "Explore my work",
+    primaryCta: "Explore projects",
     portraitAlt: "Portrait of Emanuel Marcello",
-    secondaryCta: "Contact",
+    secondaryCta: "Let's talk",
     selectedCredentials: "Selected credentials",
     selectedContributions: "Selected contributions",
     stack: "Stack",
@@ -118,6 +117,19 @@ const copy = {
     work: "Work",
   },
 } satisfies Record<Locale, Record<string, string>>;
+
+const heroCopy = {
+  es: {
+    intro:
+      "Construyo productos web y mobile que combinan interfaces claras, integraciones sólidas y código mantenible.",
+    role: "Frontend / Full Stack Developer",
+  },
+  en: {
+    intro:
+      "I build web and mobile products that combine clear interfaces, solid integrations, and maintainable code.",
+    role: "Frontend / Full Stack Developer",
+  },
+} satisfies Record<Locale, Record<"intro" | "role", string>>;
 
 const monthLabels = {
   es: [
@@ -1162,32 +1174,45 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
 
 function HeroSection({ locale }: { locale: Locale }) {
   const labels = copy[locale];
+  const hero = heroCopy[locale];
 
   return (
     <section className="mx-auto flex min-h-[72svh] w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:min-h-[78svh] sm:px-6 lg:px-8">
       <div className="max-w-4xl">
         <p className="text-base font-medium text-zinc-300">
-          {profile.professionalTitle[locale]}
+          {hero.role}
         </p>
         <h1 className="mt-5 text-5xl font-semibold tracking-normal text-zinc-50 sm:text-6xl lg:text-7xl">
           Ema Marc
         </h1>
-        <p className="mt-7 max-w-3xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
-          {profile.summary?.[locale]}
+        <p className="mt-7 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
+          {hero.intro}
         </p>
-        <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <Link
-            className="inline-flex min-h-12 items-center justify-center rounded-full bg-zinc-100 px-5 text-sm font-semibold text-zinc-950 transition-colors hover:bg-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-            href={`/${locale}#work`}
+        <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:gap-8">
+          <a
+            className="group inline-flex min-h-11 items-center border-b border-white/[0.2] pb-2 text-base font-semibold text-zinc-100 transition-colors hover:border-white/50 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+            href="#work"
           >
             {labels.primaryCta}
-          </Link>
-          <Link
-            className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/10 px-5 text-sm font-semibold text-zinc-100 transition-colors hover:border-white/25 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-            href={`/${locale}#contact`}
+            <span
+              aria-hidden="true"
+              className="ml-2 text-zinc-500 motion-safe:transition-transform motion-safe:duration-200 group-hover:text-zinc-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:translate-y-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-safe:group-focus-visible:translate-y-0.5"
+            >
+              ↘
+            </span>
+          </a>
+          <a
+            className="group inline-flex min-h-11 items-center border-b border-white/[0.12] pb-2 text-base font-medium text-zinc-300 transition-colors hover:border-white/35 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+            href="#contact"
           >
             {labels.secondaryCta}
-          </Link>
+            <span
+              aria-hidden="true"
+              className="ml-2 text-zinc-500 motion-safe:transition-transform motion-safe:duration-200 group-hover:text-zinc-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-safe:group-focus-visible:-translate-y-0.5"
+            >
+              ↗
+            </span>
+          </a>
         </div>
       </div>
     </section>
