@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { profile, projects } from "@/content/portfolio";
-import type { Locale, Project } from "@/content/portfolio";
+import { experiences, profile, projects } from "@/content/portfolio";
+import type { Experience, Locale, Project } from "@/content/portfolio";
 
 const scanTechnologies: Record<string, readonly string[]> = {
   "ai-chatbot": ["Python", "Streamlit", "Groq"],
@@ -28,6 +28,7 @@ const anchorProjectIds = {
 const copy = {
   es: {
     about: "Sobre mí",
+    additionalContributions: "Contribuciones adicionales",
     backend: "Backend",
     backendRepository: "Repositorio backend",
     certificate: "Certificado",
@@ -42,19 +43,25 @@ const copy = {
     fullStack: "Stack completo",
     github: "GitHub",
     highlights: "Highlights",
+    hideContributions: "Ocultar contribuciones",
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Superficie reservada para evidencia visual real",
+    moreContributions: "Más contribuciones",
     moreOnGithub: "Más en GitHub",
     nextMilestone: "Próximo hito estructural",
     otherWork: "Otros proyectos",
+    present: "Actualidad",
     primaryCta: "Explorar proyectos",
     secondaryCta: "Contacto",
+    selectedContributions: "Contribuciones principales",
+    stack: "Stack",
     technicalPlaceholder: "Superficie reservada para evidencia técnica real",
     work: "Proyectos",
   },
   en: {
     about: "About",
+    additionalContributions: "Additional contributions",
     backend: "Backend",
     backendRepository: "Backend repository",
     certificate: "Certificate",
@@ -69,18 +76,56 @@ const copy = {
     fullStack: "Full stack",
     github: "GitHub",
     highlights: "Highlights",
+    hideContributions: "Hide contributions",
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Surface reserved for real visual evidence",
+    moreContributions: "More contributions",
     moreOnGithub: "More on GitHub",
     nextMilestone: "Next structural milestone",
     otherWork: "Other Work",
+    present: "Present",
     primaryCta: "Explore my work",
     secondaryCta: "Contact",
+    selectedContributions: "Selected contributions",
+    stack: "Stack",
     technicalPlaceholder: "Surface reserved for real technical evidence",
     work: "Work",
   },
 } satisfies Record<Locale, Record<string, string>>;
+
+const monthLabels = {
+  es: [
+    "Ene",
+    "Feb",
+    "Mar",
+    "Abr",
+    "May",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dic",
+  ],
+  en: [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ],
+} satisfies Record<Locale, readonly string[]>;
+
+const visibleExperienceHighlights = 2;
 
 const linkOrder = [
   "repository",
@@ -106,6 +151,26 @@ function getText(text: Project["summary"], locale: Locale) {
 
 function getScanTechnologies(project: Project) {
   return scanTechnologies[project.id] ?? project.technologies;
+}
+
+function formatMonthYear(value: string, locale: Locale) {
+  const [year, month] = value.split("-");
+  const monthLabel = monthLabels[locale][Number(month) - 1];
+
+  return year && monthLabel ? `${monthLabel} ${year}` : value;
+}
+
+function formatExperiencePeriod(
+  period: Experience["period"],
+  locale: Locale,
+) {
+  return `${formatMonthYear(period.start, locale)} — ${
+    period.end ? formatMonthYear(period.end, locale) : copy[locale].present
+  }`;
+}
+
+function getExperienceYear(experience: Experience) {
+  return experience.period.start.slice(0, 4);
 }
 
 function getLinkLabel(linkKey: LinkKey, locale: Locale) {
@@ -552,12 +617,141 @@ function WorkSection({ locale }: { locale: Locale }) {
   );
 }
 
+function ExperienceRecord({
+  experience,
+  locale,
+}: {
+  experience: Experience;
+  locale: Locale;
+}) {
+  const labels = copy[locale];
+  const visibleHighlights = experience.highlights.slice(
+    0,
+    visibleExperienceHighlights,
+  );
+  const remainingHighlights = experience.highlights.slice(
+    visibleExperienceHighlights,
+  );
+
+  return (
+    <article
+      aria-labelledby={`${experience.id}-title`}
+      className="grid gap-6 border-b border-white/10 py-9 last:border-b-0 sm:py-11 lg:grid-cols-[7rem_minmax(0,1fr)_minmax(12rem,0.35fr)] lg:gap-10"
+    >
+      <div className="space-y-2 lg:pt-1">
+        <time
+          className="block font-mono text-sm text-zinc-500"
+          dateTime={experience.period.start}
+        >
+          {getExperienceYear(experience)}
+        </time>
+        <p className="font-mono text-xs leading-5 text-zinc-600">
+          {formatExperiencePeriod(experience.period, locale)}
+        </p>
+      </div>
+
+      <div className="min-w-0">
+        <h3
+          className="text-2xl font-semibold tracking-normal text-zinc-50 sm:text-3xl"
+          id={`${experience.id}-title`}
+        >
+          {experience.company}
+        </h3>
+        <p className="mt-2 text-sm font-medium text-zinc-400 sm:text-base">
+          {experience.role[locale]}
+        </p>
+
+        <ul
+          aria-label={labels.selectedContributions}
+          className="mt-6 space-y-3 text-sm leading-7 text-zinc-300 sm:text-base sm:leading-8"
+        >
+          {visibleHighlights.map((highlight) => (
+            <li className="border-l border-white/10 pl-4" key={highlight.en}>
+              {highlight[locale]}
+            </li>
+          ))}
+        </ul>
+
+        {remainingHighlights.length > 0 ? (
+          <details className="group mt-5">
+            <summary className="inline-flex min-h-9 cursor-pointer list-none items-center gap-2 border-b border-white/10 text-xs font-medium uppercase tracking-[0.16em] text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 [&::-webkit-details-marker]:hidden">
+              <span className="group-open:hidden">
+                {labels.moreContributions}
+              </span>
+              <span className="hidden group-open:inline">
+                {labels.hideContributions}
+              </span>
+              <span aria-hidden="true" className="text-zinc-600">
+                <span className="group-open:hidden">+</span>
+                <span className="hidden group-open:inline">×</span>
+              </span>
+            </summary>
+            <ul
+              aria-label={labels.additionalContributions}
+              className="mt-4 space-y-3 text-sm leading-7 text-zinc-400"
+            >
+              {remainingHighlights.map((highlight) => (
+                <li
+                  className="border-l border-white/[0.08] pl-4"
+                  key={highlight.en}
+                >
+                  {highlight[locale]}
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+      </div>
+
+      <aside className="min-w-0 border-t border-white/[0.08] pt-5 lg:border-t-0 lg:pt-1">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+          {labels.stack}
+        </p>
+        <div className="mt-3">
+          <TechnologyList items={experience.technologies} />
+        </div>
+      </aside>
+    </article>
+  );
+}
+
+function ExperienceSection({ locale }: { locale: Locale }) {
+  const labels = copy[locale];
+
+  return (
+    <section
+      aria-labelledby="experience-title"
+      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-16 sm:px-6 lg:px-8"
+      id="experience"
+    >
+      <div className="mb-10 max-w-3xl">
+        <h2
+          className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+          id="experience-title"
+        >
+          {labels.experience}
+        </h2>
+      </div>
+
+      <div className="border-t border-white/10">
+        {experiences.map((experience) => (
+          <ExperienceRecord
+            experience={experience}
+            key={experience.id}
+            locale={locale}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SectionMarker({
   id,
   locale,
   title,
 }: {
-  id: "experience" | "about" | "contact";
+  id: "about" | "contact";
   locale: Locale;
   title: string;
 }) {
@@ -621,7 +815,7 @@ export function PortfolioHome({ locale }: PortfolioHomeProps) {
     <main id="main-content" className="flex w-full flex-1 flex-col">
       <HeroSection locale={locale} />
       <WorkSection locale={locale} />
-      <SectionMarker id="experience" locale={locale} title={labels.experience} />
+      <ExperienceSection locale={locale} />
       <SectionMarker id="about" locale={locale} title={labels.about} />
       <SectionMarker id="contact" locale={locale} title={labels.contact} />
     </main>
