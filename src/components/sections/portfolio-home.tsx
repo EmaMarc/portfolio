@@ -1,6 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
 import { experiences, profile, projects } from "@/content/portfolio";
-import type { Experience, Locale, Project } from "@/content/portfolio";
+import type {
+  Certification,
+  Education,
+  Experience,
+  Locale,
+  Project,
+} from "@/content/portfolio";
 
 const scanTechnologies: Record<string, readonly string[]> = {
   "ai-chatbot": ["Python", "Streamlit", "Groq"],
@@ -44,6 +51,7 @@ const copy = {
     github: "GitHub",
     highlights: "Highlights",
     hideContributions: "Ocultar contribuciones",
+    languages: "Idiomas",
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Superficie reservada para evidencia visual real",
@@ -53,9 +61,12 @@ const copy = {
     otherWork: "Otros proyectos",
     present: "Actualidad",
     primaryCta: "Explorar proyectos",
+    portraitAlt: "Retrato de Emanuel Marcello",
     secondaryCta: "Contacto",
+    selectedCredentials: "Credenciales seleccionadas",
     selectedContributions: "Contribuciones principales",
     stack: "Stack",
+    studies: "Formación",
     technicalPlaceholder: "Superficie reservada para evidencia técnica real",
     work: "Proyectos",
   },
@@ -77,6 +88,7 @@ const copy = {
     github: "GitHub",
     highlights: "Highlights",
     hideContributions: "Hide contributions",
+    languages: "Languages",
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Surface reserved for real visual evidence",
@@ -86,9 +98,12 @@ const copy = {
     otherWork: "Other Work",
     present: "Present",
     primaryCta: "Explore my work",
+    portraitAlt: "Portrait of Emanuel Marcello",
     secondaryCta: "Contact",
+    selectedCredentials: "Selected credentials",
     selectedContributions: "Selected contributions",
     stack: "Stack",
+    studies: "Education",
     technicalPlaceholder: "Surface reserved for real technical evidence",
     work: "Work",
   },
@@ -126,6 +141,12 @@ const monthLabels = {
 } satisfies Record<Locale, readonly string[]>;
 
 const visibleExperienceHighlights = 2;
+
+const selectedCredentialIds = [
+  "talento-tech-backend-node",
+  "oracle-one-java-spring-g7",
+  "english-for-it",
+] as const;
 
 const linkOrder = [
   "repository",
@@ -171,6 +192,26 @@ function formatExperiencePeriod(
 
 function getExperienceYear(experience: Experience) {
   return experience.period.start.slice(0, 4);
+}
+
+function formatYearPeriod(period: Education["period"], locale: Locale) {
+  return `${period.start} — ${period.end ?? copy[locale].present}`;
+}
+
+function formatCredentialMeta(credential: Certification) {
+  return [String(credential.year), credential.hours ? `${credential.hours} h` : ""]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+function getSelectedCredentials() {
+  return selectedCredentialIds.flatMap((credentialId) => {
+    const credential = profile.certifications.find(
+      (certification) => certification.id === credentialId,
+    );
+
+    return credential ? [credential] : [];
+  });
 }
 
 function getLinkLabel(linkKey: LinkKey, locale: Locale) {
@@ -746,6 +787,133 @@ function ExperienceSection({ locale }: { locale: Locale }) {
   );
 }
 
+function AboutSection({ locale }: { locale: Locale }) {
+  const labels = copy[locale];
+  const selectedCredentials = getSelectedCredentials();
+
+  return (
+    <section
+      aria-labelledby="about-title"
+      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-16 sm:px-6 lg:px-8"
+      id="about"
+    >
+      <h2
+        className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+        id="about-title"
+      >
+        {labels.about}
+      </h2>
+
+      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(17rem,0.42fr)_minmax(0,0.58fr)] lg:gap-16">
+        <div className="order-2 lg:order-1 lg:row-span-2">
+          <div className="relative aspect-square w-full max-w-[23rem] overflow-hidden rounded-[4px] border border-white/[0.08] shadow-[0_22px_70px_rgba(0,0,0,0.35)] sm:max-w-[26rem] lg:max-w-none">
+            <Image
+              alt={labels.portraitAlt}
+              className="object-cover object-center"
+              fill
+              loading="lazy"
+              sizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 26rem, 30vw"
+              src="/media/profile/emanuel-marcello.png"
+            />
+          </div>
+        </div>
+
+        <div className="order-1 min-w-0 lg:order-2">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+            {profile.professionalTitle[locale]}
+          </p>
+          {profile.summary ? (
+            <p className="mt-5 max-w-3xl text-base leading-8 text-zinc-300 sm:text-lg sm:leading-9">
+              {profile.summary[locale]}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="order-3 min-w-0 space-y-8 lg:order-3">
+          <section aria-labelledby="about-education-title">
+            <h3
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              id="about-education-title"
+            >
+              {labels.studies}
+            </h3>
+            <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
+              {profile.education.map((education, index) => (
+                <li className="py-4" key={education.id}>
+                  <p
+                    className={
+                      index === 0
+                        ? "text-lg font-medium text-zinc-100"
+                        : "text-sm font-medium text-zinc-400"
+                    }
+                  >
+                    {education.title[locale]}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">
+                    {education.institution}
+                  </p>
+                  <p className="mt-2 font-mono text-xs text-zinc-600">
+                    {formatYearPeriod(education.period, locale)}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section aria-labelledby="about-languages-title">
+            <h3
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              id="about-languages-title"
+            >
+              {labels.languages}
+            </h3>
+            <ul className="mt-4 space-y-3 border-t border-white/[0.08] pt-4">
+              {profile.languages.map((language) => (
+                <li className="text-sm leading-6" key={language.id}>
+                  <p className="text-zinc-300">
+                    <span className="font-medium text-zinc-100">
+                      {language.name[locale]}
+                    </span>
+                    <span className="text-zinc-600"> — </span>
+                    <span>{language.proficiency[locale]}</span>
+                  </p>
+                  {language.note ? (
+                    <p className="mt-1 text-zinc-500">{language.note[locale]}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section aria-labelledby="about-credentials-title">
+            <h3
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              id="about-credentials-title"
+            >
+              {labels.selectedCredentials}
+            </h3>
+            <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
+              {selectedCredentials.map((credential) => (
+                <li className="py-4" key={credential.id}>
+                  <p className="text-sm font-medium text-zinc-200">
+                    {credential.name[locale]}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500">
+                    {credential.issuer[locale]}
+                  </p>
+                  <p className="mt-2 font-mono text-xs text-zinc-600">
+                    {formatCredentialMeta(credential)}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SectionMarker({
   id,
   locale,
@@ -816,7 +984,7 @@ export function PortfolioHome({ locale }: PortfolioHomeProps) {
       <HeroSection locale={locale} />
       <WorkSection locale={locale} />
       <ExperienceSection locale={locale} />
-      <SectionMarker id="about" locale={locale} title={labels.about} />
+      <AboutSection locale={locale} />
       <SectionMarker id="contact" locale={locale} title={labels.contact} />
     </main>
   );
