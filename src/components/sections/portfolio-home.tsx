@@ -131,6 +131,50 @@ const heroCopy = {
   },
 } satisfies Record<Locale, Record<"intro" | "role", string>>;
 
+const aboutStoryCopy = {
+  es: {
+    currently:
+      "Ahora quiero seguir creciendo como desarrollador y profundizar especialmente en automatización y agentes de IA.",
+    currentlyLabel: "AHORA",
+    lead:
+      "Me gusta construir cosas desde cero y ver cómo una idea empieza a tomar forma hasta convertirse en algo útil, funcional y usable. Esa sensación de darle vida a un producto es una de las partes que más disfruto del desarrollo.",
+    outside:
+      "Fuera del código, disfruto especialmente los libros, las series y las historias de fantasía capaces de transportarme a otros mundos y épocas.",
+    outsideLabel: "FUERA DEL CÓDIGO",
+    outsideShort: "Lord of Mysteries · Leyendo ahora: Nacidos de la Bruma",
+    work:
+      "Cuando un problema se complica, suelo alejarme un momento y volver con otra perspectiva antes de insistir sobre la misma solución. En equipo me siento cómodo aportando sin necesidad de ocupar el centro, aunque tampoco tengo problema en asumir responsabilidades o liderar cuando el proyecto lo necesita.",
+    workLabel: "CÓMO TRABAJO",
+  },
+  en: {
+    currently:
+      "I'm currently looking to keep growing as a developer, with a particular interest in AI agents and automation.",
+    currentlyLabel: "CURRENTLY",
+    lead:
+      "I enjoy building things from scratch and watching an idea gradually take shape until it becomes something useful, functional, and usable. Bringing a product to life is one of the parts of development I enjoy the most.",
+    outside:
+      "Outside of code, I especially enjoy books, series, and fantasy stories that can transport me to other worlds and eras.",
+    outsideLabel: "OUTSIDE OF CODE",
+    outsideShort: "Lord of Mysteries · Currently reading: Mistborn",
+    work:
+      "When a problem gets difficult, I usually step away for a moment and come back with a different perspective instead of forcing the same approach. In a team, I'm comfortable contributing without needing to be at the center, but I'm also willing to take responsibility or lead when the project calls for it.",
+    workLabel: "HOW I WORK",
+  },
+} satisfies Record<
+  Locale,
+  Record<
+    | "currently"
+    | "currentlyLabel"
+    | "lead"
+    | "outside"
+    | "outsideLabel"
+    | "outsideShort"
+    | "work"
+    | "workLabel",
+    string
+  >
+>;
+
 const monthLabels = {
   es: [
     "Ene",
@@ -869,6 +913,7 @@ function ExperienceSection({ locale }: { locale: Locale }) {
 
 function AboutSection({ locale }: { locale: Locale }) {
   const labels = copy[locale];
+  const story = aboutStoryCopy[locale];
   const portraitLocation = getPortraitLocation();
 
   return (
@@ -910,14 +955,49 @@ function AboutSection({ locale }: { locale: Locale }) {
           <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
             {profile.professionalTitle[locale]}
           </p>
-          {profile.summary ? (
-            <p className="mt-5 max-w-3xl text-base leading-8 text-zinc-300 sm:text-lg sm:leading-9">
-              {profile.summary[locale]}
+
+          <div className="mt-5 max-w-3xl">
+            <p className="text-lg leading-9 text-zinc-100 sm:text-xl sm:leading-10">
+              {story.lead}
             </p>
-          ) : null}
+
+            <div className="mt-8 space-y-7 border-t border-white/[0.08] pt-7">
+              <div className="space-y-3">
+                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                  {story.workLabel}
+                </p>
+                <p className="text-base leading-8 text-zinc-300">
+                  {story.work}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                  {story.currentlyLabel}
+                </p>
+                <p className="text-base leading-8 text-zinc-300">
+                  {story.currently}
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                  {story.outsideLabel}
+                </p>
+                <div className="space-y-2">
+                  <p className="text-base leading-8 text-zinc-300">
+                    {story.outside}
+                  </p>
+                  <p className="font-mono text-xs font-medium tracking-[0.08em] text-zinc-500">
+                    {story.outsideShort}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="order-3 min-w-0 space-y-8 lg:order-3">
+        <div className="order-3 min-w-0 space-y-8 lg:order-3 lg:pt-2">
           <section aria-labelledby="about-education-title">
             <h3
               className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
