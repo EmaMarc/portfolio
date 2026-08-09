@@ -34,9 +34,16 @@ const copy = {
     backendRepository: "Repositorio backend",
     certificate: "Certificado",
     contact: "Contacto",
+    contactChannels: "Canales",
+    contactHeading: "¿Hablamos?",
+    contactIntro:
+      "Para conversaciones profesionales u oportunidades, escribime por email o conectemos en LinkedIn.",
+    currentLanguage: "Idioma actual",
     depth: "Ver detalles",
     depthClose: "Ocultar detalles",
     depthIntro: "Highlights y stack completo disponibles para profundizar.",
+    email: "Email",
+    emailCta: "Escribime por email",
     experience: "Experiencia",
     externalSuffix: "abre en una nueva pestaña",
     frontend: "Frontend",
@@ -52,7 +59,6 @@ const copy = {
     moreCertifications: "Más certificaciones y cursos",
     moreContributions: "Más contribuciones",
     moreOnGithub: "Más en GitHub",
-    nextMilestone: "Próximo hito estructural",
     otherWork: "Otros proyectos",
     present: "Actualidad",
     primaryCta: "Explorar proyectos",
@@ -73,9 +79,16 @@ const copy = {
     backendRepository: "Backend repository",
     certificate: "Certificate",
     contact: "Contact",
+    contactChannels: "Channels",
+    contactHeading: "Let's talk.",
+    contactIntro:
+      "For professional conversations or opportunities, email me or connect on LinkedIn.",
+    currentLanguage: "Current language",
     depth: "View details",
     depthClose: "Hide details",
     depthIntro: "Highlights and full stack are available for deeper review.",
+    email: "Email",
+    emailCta: "Send me an email",
     experience: "Experience",
     externalSuffix: "opens in a new tab",
     frontend: "Frontend",
@@ -91,7 +104,6 @@ const copy = {
     moreCertifications: "More certifications and courses",
     moreContributions: "More contributions",
     moreOnGithub: "More on GitHub",
-    nextMilestone: "Next structural milestone",
     otherWork: "Other Work",
     present: "Present",
     primaryCta: "Explore my work",
@@ -443,7 +455,7 @@ function PrimaryProjectCard({
   const scanContent = (
     <div className="flex min-w-0 flex-col gap-5">
       <div className="space-y-3">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
           {project.year}
         </p>
         <h4 className="text-2xl font-semibold tracking-normal text-zinc-50 sm:text-3xl">
@@ -492,7 +504,7 @@ function PrimaryProjectCard({
       </summary>
       <div className="grid gap-7 pt-5 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
         <div className="space-y-3">
-          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
             {labels.highlights}
           </h5>
           <ul className="space-y-3 text-sm leading-6 text-zinc-300">
@@ -504,7 +516,7 @@ function PrimaryProjectCard({
           </ul>
         </div>
         <div className="space-y-3 border-t border-white/[0.08] pt-5 md:border-l md:border-t-0 md:pl-5 md:pt-0">
-          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
             {labels.fullStack}
           </h5>
           <TechnologyList items={project.technologies} />
@@ -742,7 +754,7 @@ function ExperienceRecord({
         >
           {getExperienceYear(experience)}
         </time>
-        <p className="font-mono text-xs leading-5 text-zinc-600">
+        <p className="font-mono text-xs leading-5 text-zinc-500">
           {formatExperiencePeriod(experience.period, locale)}
         </p>
       </div>
@@ -801,7 +813,7 @@ function ExperienceRecord({
       </div>
 
       <aside className="min-w-0 border-t border-white/[0.08] pt-5 lg:border-t-0 lg:pt-1">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
           {labels.stack}
         </p>
         <div className="mt-3">
@@ -875,7 +887,7 @@ function AboutSection({ locale }: { locale: Locale }) {
                 />
               </div>
             </div>
-            <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/[0.06] pt-3 font-mono text-[0.6875rem] leading-5 tracking-[0.08em] text-zinc-600">
+            <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/[0.06] pt-3 font-mono text-[0.6875rem] leading-5 tracking-[0.08em] text-zinc-500">
               <span className="text-zinc-400">{profile.name}</span>
               {portraitLocation ? <span>{portraitLocation}</span> : null}
             </figcaption>
@@ -883,7 +895,7 @@ function AboutSection({ locale }: { locale: Locale }) {
         </div>
 
         <div className="order-1 min-w-0 lg:order-2">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
             {profile.professionalTitle[locale]}
           </p>
           {profile.summary ? (
@@ -896,7 +908,7 @@ function AboutSection({ locale }: { locale: Locale }) {
         <div className="order-3 min-w-0 space-y-8 lg:order-3">
           <section aria-labelledby="about-education-title">
             <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
               id="about-education-title"
             >
               {labels.studies}
@@ -916,7 +928,7 @@ function AboutSection({ locale }: { locale: Locale }) {
                   <p className="mt-1 text-sm leading-6 text-zinc-500">
                     {education.institution}
                   </p>
-                  <p className="mt-2 font-mono text-xs text-zinc-600">
+                  <p className="mt-2 font-mono text-xs text-zinc-500">
                     {formatYearPeriod(education.period, locale)}
                   </p>
                 </li>
@@ -926,7 +938,7 @@ function AboutSection({ locale }: { locale: Locale }) {
 
           <section aria-labelledby="about-languages-title">
             <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
               id="about-languages-title"
             >
               {labels.languages}
@@ -938,7 +950,7 @@ function AboutSection({ locale }: { locale: Locale }) {
                     <span className="font-medium text-zinc-100">
                       {language.name[locale]}
                     </span>
-                    <span className="text-zinc-600"> — </span>
+                    <span className="text-zinc-500"> — </span>
                     <span>{language.proficiency[locale]}</span>
                   </p>
                   {language.note ? (
@@ -951,7 +963,7 @@ function AboutSection({ locale }: { locale: Locale }) {
 
           <section aria-labelledby="about-credentials-title">
             <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600"
+              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
               id="about-credentials-title"
             >
               {labels.selectedCredentials}
@@ -987,7 +999,7 @@ function AboutSection({ locale }: { locale: Locale }) {
                       {credential.institution[locale]}
                     </p>
                     {credential.meta ? (
-                      <p className="mt-2 font-mono text-xs text-zinc-600">
+                      <p className="mt-2 font-mono text-xs text-zinc-500">
                         {credential.meta}
                       </p>
                     ) : null}
@@ -1014,7 +1026,7 @@ function AboutSection({ locale }: { locale: Locale }) {
               target="_blank"
             >
               {labels.moreCertifications}
-              <span aria-hidden="true" className="ml-1 text-zinc-600">
+              <span aria-hidden="true" className="ml-1 text-zinc-500">
                 ↗
               </span>
               <span className="sr-only">, {labels.externalSuffix}</span>
@@ -1026,31 +1038,125 @@ function AboutSection({ locale }: { locale: Locale }) {
   );
 }
 
-function SectionMarker({
-  id,
-  locale,
-  title,
-}: {
-  id: "about" | "contact";
-  locale: Locale;
-  title: string;
-}) {
+function ContactSection({ locale }: { locale: Locale }) {
+  const labels = copy[locale];
+
   return (
     <section
-      aria-labelledby={`${id}-title`}
-      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-12 sm:px-6 lg:px-8"
-      id={id}
+      aria-labelledby="contact-title"
+      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-36"
+      id="contact"
     >
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-600">
-        {copy[locale].nextMilestone}
-      </p>
-      <h2
-        id={`${id}-title`}
-        className="mt-3 text-3xl font-semibold text-zinc-100"
-      >
-        {title}
-      </h2>
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.72fr)_minmax(14rem,0.28fr)] lg:items-end lg:gap-16">
+        <div className="min-w-0">
+          <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
+            {labels.contact}
+          </p>
+          <h2
+            className="mt-5 text-5xl font-semibold tracking-normal text-zinc-50 sm:text-6xl lg:text-7xl"
+            id="contact-title"
+          >
+            {labels.contactHeading}
+          </h2>
+          <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-400 sm:text-lg sm:leading-9">
+            {labels.contactIntro}
+          </p>
+
+          {profile.email ? (
+            <div className="mt-12 min-w-0">
+              <a
+                aria-label={`${labels.emailCta}: ${profile.email}`}
+                className="group inline-block max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                href={`mailto:${profile.email}`}
+              >
+                <span className="inline-flex max-w-full items-baseline gap-3 whitespace-nowrap border-b border-white/[0.18] pb-3 text-[clamp(1.5rem,7vw,1.875rem)] font-medium leading-tight tracking-normal text-zinc-100 transition-colors group-hover:border-white/45 group-hover:text-zinc-50 sm:text-4xl lg:text-5xl">
+                  <span>{labels.emailCta}</span>
+                  <span aria-hidden="true" className="text-zinc-500">
+                    ↗
+                  </span>
+                </span>
+                <span className="mt-3 block max-w-full whitespace-nowrap font-mono text-[0.6875rem] leading-5 tracking-[0.01em] text-zinc-500 transition-colors group-hover:text-zinc-400 sm:text-xs sm:tracking-[0.04em]">
+                  {profile.email}
+                </span>
+              </a>
+            </div>
+          ) : null}
+        </div>
+
+        {profile.links?.linkedin || profile.links?.github ? (
+          <aside className="border-t border-white/[0.08] pt-6 lg:border-l lg:border-t-0 lg:pl-8">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+              {labels.contactChannels}
+            </p>
+            <ul className="mt-5 grid gap-2">
+              {profile.links?.linkedin ? (
+                <li>
+                  <a
+                    aria-label={`${labels.linkedin}, ${labels.externalSuffix}`}
+                    className="flex min-h-11 items-center justify-between gap-4 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                    href={profile.links.linkedin}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <span>{labels.linkedin}</span>
+                    <span aria-hidden="true" className="text-zinc-500">
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ) : null}
+              {profile.links?.github ? (
+                <li>
+                  <a
+                    aria-label={`${labels.github}, ${labels.externalSuffix}`}
+                    className="flex min-h-11 items-center justify-between gap-4 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                    href={profile.links.github}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <span>{labels.github}</span>
+                    <span aria-hidden="true" className="text-zinc-500">
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ) : null}
+            </ul>
+          </aside>
+        ) : null}
+      </div>
     </section>
+  );
+}
+
+function PortfolioFooter({ locale }: { locale: Locale }) {
+  const labels = copy[locale];
+  const portraitLocation = getPortraitLocation();
+  const copyrightYear = 2026;
+
+  return (
+    <footer className="mx-auto w-full max-w-6xl border-t border-white/[0.08] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold tracking-normal text-zinc-300">
+            Ema Marc
+          </p>
+          {portraitLocation ? (
+            <p className="mt-1 font-mono text-xs tracking-[0.06em] text-zinc-500">
+              {portraitLocation}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs tracking-[0.06em] text-zinc-500 sm:justify-end">
+          <span>
+            <span className="sr-only">{labels.currentLanguage}: </span>
+            {locale.toUpperCase()}
+          </span>
+          <span>© {copyrightYear} Emanuel Marcello</span>
+        </div>
+      </div>
+    </footer>
   );
 }
 
@@ -1089,15 +1195,14 @@ function HeroSection({ locale }: { locale: Locale }) {
 }
 
 export function PortfolioHome({ locale }: PortfolioHomeProps) {
-  const labels = copy[locale];
-
   return (
     <main id="main-content" className="flex w-full flex-1 flex-col">
       <HeroSection locale={locale} />
       <WorkSection locale={locale} />
       <ExperienceSection locale={locale} />
       <AboutSection locale={locale} />
-      <SectionMarker id="contact" locale={locale} title={labels.contact} />
+      <ContactSection locale={locale} />
+      <PortfolioFooter locale={locale} />
     </main>
   );
 }
