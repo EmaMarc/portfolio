@@ -1,13 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { experiences, profile, projects } from "@/content/portfolio";
-import type {
-  Certification,
-  Education,
-  Experience,
-  Locale,
-  Project,
-} from "@/content/portfolio";
+import type { Education, Experience, Locale, Project } from "@/content/portfolio";
 
 const scanTechnologies: Record<string, readonly string[]> = {
   "ai-chatbot": ["Python", "Streamlit", "Groq"],
@@ -55,6 +49,7 @@ const copy = {
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Superficie reservada para evidencia visual real",
+    moreCertifications: "Más certificaciones y cursos",
     moreContributions: "Más contribuciones",
     moreOnGithub: "Más en GitHub",
     nextMilestone: "Próximo hito estructural",
@@ -68,6 +63,7 @@ const copy = {
     stack: "Stack",
     studies: "Formación",
     technicalPlaceholder: "Superficie reservada para evidencia técnica real",
+    viewPost: "Ver publicación",
     work: "Proyectos",
   },
   en: {
@@ -92,6 +88,7 @@ const copy = {
     live: "Live",
     linkedin: "LinkedIn",
     mediaPlaceholder: "Surface reserved for real visual evidence",
+    moreCertifications: "More certifications and courses",
     moreContributions: "More contributions",
     moreOnGithub: "More on GitHub",
     nextMilestone: "Next structural milestone",
@@ -105,6 +102,7 @@ const copy = {
     stack: "Stack",
     studies: "Education",
     technicalPlaceholder: "Surface reserved for real technical evidence",
+    viewPost: "View post",
     work: "Work",
   },
 } satisfies Record<Locale, Record<string, string>>;
@@ -142,11 +140,73 @@ const monthLabels = {
 
 const visibleExperienceHighlights = 2;
 
-const selectedCredentialIds = [
-  "talento-tech-backend-node",
-  "oracle-one-java-spring-g7",
-  "english-for-it",
+const selectedCredentials = [
+  {
+    id: "react-js-diploma",
+    image: {
+      alt: {
+        es: "Certificado del Diploma en React JS",
+        en: "React JS Diploma certificate",
+      },
+      filename: "Emanuel - React.jpg",
+    },
+    institution: {
+      es: "Gobierno de la Ciudad de Buenos Aires",
+      en: "Gobierno de la Ciudad de Buenos Aires",
+    },
+    meta: "",
+    name: {
+      es: "Diploma en React JS",
+      en: "React JS Diploma",
+    },
+    postUrl:
+      "https://www.linkedin.com/posts/emamarcello_diploma-en-react-js-activity-7407803317457702913-8nVV?utm_source=share&utm_medium=member_desktop&rcm=ACoAADkx1mMBdhvgk0CTGvXkmy7dupP5qcVwqvc",
+  },
+  {
+    id: "talento-tech-backend-node",
+    image: {
+      alt: {
+        es: "Certificado Back-End / Node.js",
+        en: "Back-End / Node.js certificate",
+      },
+      filename: "Emanuel - Node.jpg",
+    },
+    institution: {
+      es: "Talento Tech / Gobierno de la Ciudad de Buenos Aires",
+      en: "Talento Tech / Gobierno de la Ciudad de Buenos Aires",
+    },
+    meta: "2025 · 80 h",
+    name: {
+      es: "Back-End / Node.js",
+      en: "Back-End / Node.js",
+    },
+    postUrl:
+      "https://www.linkedin.com/posts/emamarcello_estoy-muy-contento-de-compartir-que-finalicé-share-7353832563477483520-KPEz/?utm_source=share&utm_medium=member_desktop&rcm=ACoAADkx1mMBdhvgk0CTGvXkmy7dupP5qcVwqvc",
+  },
+  {
+    id: "oracle-one-java-spring-g7",
+    image: {
+      alt: {
+        es: "Certificado Java & Spring Framework G7",
+        en: "Java & Spring Framework G7 certificate",
+      },
+      filename: "Emanuel - Springboot.jpg",
+    },
+    institution: {
+      es: "ONE · Oracle Next Education / Alura Latam",
+      en: "ONE · Oracle Next Education / Alura Latam",
+    },
+    meta: "2025 · 102 h",
+    name: {
+      es: "Java & Spring Framework G7",
+      en: "Java & Spring Framework G7",
+    },
+    postUrl: "https://www.linkedin.com/feed/update/urn:li:activity:7287898064621625345/",
+  },
 ] as const;
+
+const moreCertificationsUrl =
+  "https://www.linkedin.com/in/emamarcello/details/certifications/";
 
 const linkOrder = [
   "repository",
@@ -196,22 +256,6 @@ function getExperienceYear(experience: Experience) {
 
 function formatYearPeriod(period: Education["period"], locale: Locale) {
   return `${period.start} — ${period.end ?? copy[locale].present}`;
-}
-
-function formatCredentialMeta(credential: Certification) {
-  return [String(credential.year), credential.hours ? `${credential.hours} h` : ""]
-    .filter(Boolean)
-    .join(" · ");
-}
-
-function getSelectedCredentials() {
-  return selectedCredentialIds.flatMap((credentialId) => {
-    const credential = profile.certifications.find(
-      (certification) => certification.id === credentialId,
-    );
-
-    return credential ? [credential] : [];
-  });
 }
 
 function getLinkLabel(linkKey: LinkKey, locale: Locale) {
@@ -789,7 +833,6 @@ function ExperienceSection({ locale }: { locale: Locale }) {
 
 function AboutSection({ locale }: { locale: Locale }) {
   const labels = copy[locale];
-  const selectedCredentials = getSelectedCredentials();
 
   return (
     <section
@@ -894,19 +937,67 @@ function AboutSection({ locale }: { locale: Locale }) {
             </h3>
             <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
               {selectedCredentials.map((credential) => (
-                <li className="py-4" key={credential.id}>
-                  <p className="text-sm font-medium text-zinc-200">
-                    {credential.name[locale]}
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-zinc-500">
-                    {credential.issuer[locale]}
-                  </p>
-                  <p className="mt-2 font-mono text-xs text-zinc-600">
-                    {formatCredentialMeta(credential)}
-                  </p>
+                <li
+                  className="flex min-w-0 items-start gap-4 py-4"
+                  key={credential.id}
+                >
+                  <a
+                    aria-label={`${labels.viewPost}: ${credential.name[locale]}`}
+                    className="relative h-24 w-28 shrink-0 overflow-hidden rounded-[3px] border border-white/[0.1] bg-white/[0.02] transition hover:border-white/25 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                    href={credential.postUrl}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <Image
+                      alt={credential.image.alt[locale]}
+                      className="object-contain p-1"
+                      fill
+                      loading="lazy"
+                      sizes="7rem"
+                      src={`/media/credentials/${credential.image.filename}`}
+                    />
+                  </a>
+
+                  <div className="min-w-0 pt-0.5">
+                    <p className="text-sm font-medium text-zinc-200">
+                      {credential.name[locale]}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-zinc-500">
+                      {credential.institution[locale]}
+                    </p>
+                    {credential.meta ? (
+                      <p className="mt-2 font-mono text-xs text-zinc-600">
+                        {credential.meta}
+                      </p>
+                    ) : null}
+                    <a
+                      aria-label={`${labels.viewPost}: ${credential.name[locale]}, ${labels.externalSuffix}`}
+                      className="mt-3 inline-flex min-h-8 items-center border-b border-white/10 text-sm font-medium text-zinc-300 transition-colors hover:border-white/35 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                      href={credential.postUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {labels.viewPost}
+                      <span aria-hidden="true" className="ml-1 text-zinc-500">
+                        ↗
+                      </span>
+                    </a>
+                  </div>
                 </li>
               ))}
             </ol>
+            <a
+              className="mt-4 inline-flex min-h-9 items-center border-b border-white/10 text-sm font-medium text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+              href={moreCertificationsUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {labels.moreCertifications}
+              <span aria-hidden="true" className="ml-1 text-zinc-600">
+                ↗
+              </span>
+              <span className="sr-only">, {labels.externalSuffix}</span>
+            </a>
           </section>
         </div>
       </div>
