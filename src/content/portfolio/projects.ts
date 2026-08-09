@@ -231,6 +231,7 @@ export const projects: readonly Project[] = [
     year: 2024,
     section: "other",
     technologies: [
+      "Python",
       "Streamlit",
       "Groq",
     ],
@@ -240,6 +241,7 @@ export const projects: readonly Project[] = [
     },
     highlights: [],
     links: {
+      repository: "https://github.com/EmaMarc/IA_ChatBot",
       linkedinPost:
         "https://www.linkedin.com/feed/update/urn:li:activity:7266954231939518465/",
     },
