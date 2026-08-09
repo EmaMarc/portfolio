@@ -258,6 +258,18 @@ function formatYearPeriod(period: Education["period"], locale: Locale) {
   return `${period.start} — ${period.end ?? copy[locale].present}`;
 }
 
+function getPortraitLocation() {
+  if (!profile.location) {
+    return "";
+  }
+
+  const [city, , country] = profile.location
+    .split(",")
+    .map((part) => part.trim());
+
+  return city && country ? `${city} · ${country}` : profile.location;
+}
+
 function getLinkLabel(linkKey: LinkKey, locale: Locale) {
   const labels = copy[locale];
 
@@ -833,6 +845,7 @@ function ExperienceSection({ locale }: { locale: Locale }) {
 
 function AboutSection({ locale }: { locale: Locale }) {
   const labels = copy[locale];
+  const portraitLocation = getPortraitLocation();
 
   return (
     <section
@@ -847,18 +860,26 @@ function AboutSection({ locale }: { locale: Locale }) {
         {labels.about}
       </h2>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(17rem,0.42fr)_minmax(0,0.58fr)] lg:gap-16">
+      <div className="mt-12 grid gap-x-10 gap-y-14 lg:grid-cols-[minmax(17rem,0.42fr)_minmax(0,0.58fr)] lg:gap-x-16 lg:gap-y-12">
         <div className="order-2 lg:order-1 lg:row-span-2">
-          <div className="relative aspect-square w-full max-w-[23rem] overflow-hidden rounded-[4px] border border-white/[0.08] shadow-[0_22px_70px_rgba(0,0,0,0.35)] sm:max-w-[26rem] lg:max-w-none">
-            <Image
-              alt={labels.portraitAlt}
-              className="object-cover object-center"
-              fill
-              loading="lazy"
-              sizes="(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 26rem, 30vw"
-              src="/media/profile/emanuel-marcello.png"
-            />
-          </div>
+          <figure className="mx-auto w-[92%] max-w-[21.5rem] min-[390px]:w-[86%] sm:w-[78%] sm:max-w-[23rem] md:w-[62%] md:max-w-[24rem] lg:mx-0 lg:ml-3 lg:w-[88%] lg:max-w-[23.5rem] xl:ml-5 xl:max-w-[25rem]">
+            <div className="relative before:pointer-events-none before:absolute before:-left-px before:-top-px before:z-[2] before:h-10 before:w-14 before:bg-no-repeat before:content-[''] before:[background-image:linear-gradient(90deg,rgba(244,244,245,0.16)_0%,rgba(244,244,245,0.07)_52%,rgba(244,244,245,0)_100%),linear-gradient(180deg,rgba(244,244,245,0.14)_0%,rgba(244,244,245,0.06)_54%,rgba(244,244,245,0)_100%)] before:[background-position:left_top,left_top] before:[background-size:3.5rem_1px,1px_2.5rem] after:pointer-events-none after:absolute after:-bottom-px after:-right-px after:z-[2] after:h-9 after:w-12 after:bg-no-repeat after:content-[''] after:[background-image:linear-gradient(270deg,rgba(244,244,245,0.13)_0%,rgba(244,244,245,0.055)_50%,rgba(244,244,245,0)_100%),linear-gradient(0deg,rgba(244,244,245,0.12)_0%,rgba(244,244,245,0.05)_52%,rgba(244,244,245,0)_100%)] after:[background-position:right_bottom,right_bottom] after:[background-size:3rem_1px,1px_2.25rem]">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] border border-white/[0.06] bg-zinc-950 shadow-[0_18px_64px_rgba(0,0,0,0.34)] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:z-[1] after:h-[31%] after:[background:linear-gradient(180deg,rgba(3,3,4,0)_0%,rgba(3,3,4,0.10)_42%,rgba(3,3,4,0.54)_76%,rgba(3,3,4,0.88)_100%)] after:content-[''] lg:aspect-[5/6]">
+                <Image
+                  alt={labels.portraitAlt}
+                  className="object-cover object-[50%_50%]"
+                  fill
+                  loading="lazy"
+                  sizes="(max-width: 389px) calc((100vw - 2rem) * 0.92), (max-width: 639px) calc((100vw - 2rem) * 0.86), (max-width: 1023px) 23rem, (max-width: 1279px) 23.5rem, 25rem"
+                  src="/media/profile/emanuel-marcello.png"
+                />
+              </div>
+            </div>
+            <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/[0.06] pt-3 font-mono text-[0.6875rem] leading-5 tracking-[0.08em] text-zinc-600">
+              <span className="text-zinc-400">{profile.name}</span>
+              {portraitLocation ? <span>{portraitLocation}</span> : null}
+            </figcaption>
+          </figure>
         </div>
 
         <div className="order-1 min-w-0 lg:order-2">
