@@ -3,7 +3,7 @@ import { profile, projects } from "@/content/portfolio";
 import type { Locale, Project } from "@/content/portfolio";
 
 const scanTechnologies: Record<string, readonly string[]> = {
-  "ai-chatbot": ["Python","Streamlit", "Groq"],
+  "ai-chatbot": ["Python", "Streamlit", "Groq"],
   "api-rest-tt": ["Node.js", "Express", "Firebase Firestore", "JWT"],
   barberhood: ["HTML", "CSS", "JavaScript"],
   "con-tacto": ["React Native", "Expo", "TypeScript"],
@@ -33,6 +33,7 @@ const copy = {
     certificate: "Certificado",
     contact: "Contacto",
     depth: "Ver detalles",
+    depthClose: "Ocultar detalles",
     depthIntro: "Highlights y stack completo disponibles para profundizar.",
     experience: "Experiencia",
     externalSuffix: "abre en una nueva pestaña",
@@ -59,6 +60,7 @@ const copy = {
     certificate: "Certificate",
     contact: "Contact",
     depth: "View details",
+    depthClose: "Hide details",
     depthIntro: "Highlights and full stack are available for deeper review.",
     experience: "Experience",
     externalSuffix: "opens in a new tab",
@@ -92,6 +94,7 @@ const linkOrder = [
 type LinkKey = (typeof linkOrder)[number];
 type PrimarySection = "frontend" | "backend";
 type ProjectVariant = "anchor" | "compact";
+type TechnologyListVariant = "inline" | "compact";
 
 type PortfolioHomeProps = {
   locale: Locale;
@@ -135,15 +138,41 @@ function getProjectLinks(project: Project) {
   });
 }
 
-function TechnologyList({ items }: { items: readonly string[] }) {
+function TechnologyList({
+  items,
+  variant = "inline",
+}: {
+  items: readonly string[];
+  variant?: TechnologyListVariant;
+}) {
+  if (variant === "compact") {
+    return (
+      <ul className="flex flex-wrap gap-2" aria-label="Technologies">
+        {items.map((technology) => (
+          <li
+            className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1 text-xs font-medium text-zinc-300"
+            key={technology}
+          >
+            {technology}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
-    <ul className="flex flex-wrap gap-2" aria-label="Technologies">
-      {items.map((technology) => (
-        <li
-          className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1 text-xs font-medium text-zinc-300"
-          key={technology}
-        >
-          {technology}
+    <ul
+      className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium uppercase tracking-[0.14em] text-zinc-500"
+      aria-label="Technologies"
+    >
+      {items.map((technology, index) => (
+        <li className="flex items-center gap-2" key={technology}>
+          <span>{technology}</span>
+          {index < items.length - 1 ? (
+            <span aria-hidden="true" className="text-zinc-700">
+              ·
+            </span>
+          ) : null}
         </li>
       ))}
     </ul>
@@ -163,12 +192,15 @@ function EvidenceSurface({
     section === "backend"
       ? copy[locale].technicalPlaceholder
       : copy[locale].mediaPlaceholder;
+  const isLargeFrontendAnchor = isAnchor && section === "frontend";
 
   return (
     <div
       aria-label={label}
-      className={`grid place-items-center rounded-[8px] border border-dashed border-white/15 bg-white/[0.025] px-4 text-center text-xs font-medium uppercase tracking-[0.2em] text-zinc-500 ${
-        isAnchor ? "min-h-48 sm:min-h-56 lg:min-h-72" : "min-h-32"
+      className={`grid place-items-center rounded-[4px] border border-dashed border-white/20 bg-white/[0.035] px-4 text-center text-xs font-medium uppercase tracking-[0.18em] text-zinc-500 shadow-[0_0_28px_rgba(255,255,255,0.025)] ${
+        isLargeFrontendAnchor
+          ? "min-h-48 sm:min-h-56 lg:min-h-72"
+          : "min-h-32 sm:min-h-36"
       }`}
       role="img"
     >
@@ -195,7 +227,7 @@ function ProjectLinks({
       {links.map((link) => (
         <li key={link.key}>
           <a
-            className="inline-flex min-h-10 items-center rounded-full border border-white/10 px-3 text-sm font-medium text-zinc-200 transition-colors hover:border-white/25 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+            className="inline-flex min-h-9 items-center border-b border-white/20 text-sm font-medium text-zinc-200 transition-colors hover:border-white/50 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
             href={link.href}
             rel="noopener noreferrer"
             target="_blank"
@@ -224,78 +256,118 @@ function PrimaryProjectCard({
   const labels = copy[locale];
   const anchor = variant === "anchor";
   const summary = getText(project.summary, locale);
-
-  return (
-    <article
-      className={`grid gap-6 rounded-[8px] border border-white/10 bg-black/35 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:p-6 ${
-        anchor ? "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]" : ""
-      }`}
-    >
-      <div className="flex min-w-0 flex-col gap-5">
-        <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
-            {project.year}
-          </p>
-          <h4 className="text-2xl font-semibold tracking-normal text-zinc-50 sm:text-3xl">
-            {project.title}
-          </h4>
-          {project.role ? (
-            <p className="text-sm font-medium text-zinc-400">
-              {project.role[locale]}
-            </p>
-          ) : null}
-        </div>
-
-        {summary ? (
-          <p className="max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base">
-            {summary}
+  const isBackend = project.section === "backend";
+  const isFrontend = project.section === "frontend";
+  const isFrontendCompact = isFrontend && !anchor;
+  const frontendSurface =
+    "relative isolate grid gap-6 overflow-hidden rounded-none border border-transparent bg-black/[0.34] px-4 py-7 shadow-[0_28px_90px_rgba(0,0,0,0.46)] before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-none before:bg-no-repeat before:content-[''] before:[background-position:left_top,left_top,right_bottom,right_bottom] sm:px-5 sm:py-8 [&>*]:relative [&>*]:z-[1]";
+  const frontendEdge = anchor
+    ? "before:[background-image:linear-gradient(90deg,rgba(244,244,245,0.34)_0%,rgba(244,244,245,0.16)_46%,rgba(244,244,245,0)_100%),linear-gradient(180deg,rgba(244,244,245,0.34)_0%,rgba(244,244,245,0.16)_46%,rgba(244,244,245,0)_100%),linear-gradient(270deg,rgba(244,244,245,0.24)_0%,rgba(127,29,29,0.08)_48%,rgba(244,244,245,0)_100%),linear-gradient(0deg,rgba(244,244,245,0.24)_0%,rgba(127,29,29,0.08)_48%,rgba(244,244,245,0)_100%)] before:[background-size:42%_1px,1px_36%,32%_1px,1px_26%]"
+    : "before:[background-image:linear-gradient(90deg,rgba(244,244,245,0.26)_0%,rgba(244,244,245,0.11)_44%,rgba(244,244,245,0)_100%),linear-gradient(180deg,rgba(244,244,245,0.26)_0%,rgba(244,244,245,0.11)_44%,rgba(244,244,245,0)_100%),linear-gradient(270deg,rgba(244,244,245,0.18)_0%,rgba(127,29,29,0.06)_46%,rgba(244,244,245,0)_100%),linear-gradient(0deg,rgba(244,244,245,0.18)_0%,rgba(127,29,29,0.06)_46%,rgba(244,244,245,0)_100%)] before:[background-size:36%_1px,1px_31%,27%_1px,1px_22%]";
+  const backendSurface =
+    "grid gap-6 border-t border-white/[0.08] bg-transparent py-7 first:border-t-0 sm:py-8";
+  const surfaceClass = isFrontend
+    ? `${frontendSurface} ${frontendEdge}`
+    : backendSurface;
+  const layoutClass =
+    anchor && !isBackend
+      ? "lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]"
+      : isBackend
+        ? "lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.78fr)]"
+        : "";
+  const compactStableRegionClass =
+    "grid gap-6 lg:flex lg:min-h-[calc(40rem-9.3125rem)] lg:flex-col";
+  const lowerContentClass = isFrontendCompact ? "lg:mt-auto" : "";
+  const scanContent = (
+    <div className="flex min-w-0 flex-col gap-5">
+      <div className="space-y-3">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-600">
+          {project.year}
+        </p>
+        <h4 className="text-2xl font-semibold tracking-normal text-zinc-50 sm:text-3xl">
+          {project.title}
+        </h4>
+        {project.role ? (
+          <p className="text-sm font-medium text-zinc-400">
+            {project.role[locale]}
           </p>
         ) : null}
-
-        <TechnologyList items={getScanTechnologies(project)} />
       </div>
 
-      <div className="flex min-w-0 flex-col gap-4">
-        <EvidenceSurface
-          isAnchor={anchor}
-          locale={locale}
-          section={project.section}
-        />
-        <ProjectLinks locale={locale} project={project} />
-      </div>
+      {summary ? (
+        <p className="max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base">
+          {summary}
+        </p>
+      ) : null}
 
-      <details className="group border-t border-white/10 pt-4 lg:col-span-full">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 rounded-[8px] text-sm font-medium text-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100">
-          <span>{labels.depth}</span>
+      <TechnologyList items={getScanTechnologies(project)} />
+    </div>
+  );
+  const evidenceAndLinks = (
+    <div className={`flex min-w-0 flex-col gap-4 ${lowerContentClass}`}>
+      <EvidenceSurface
+        isAnchor={anchor}
+        locale={locale}
+        section={project.section}
+      />
+      <ProjectLinks locale={locale} project={project} />
+    </div>
+  );
+  const disclosure = (
+    <details className="group border-t border-white/10 pt-4 lg:col-span-full">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center border border-white/[0.12] bg-white/[0.025] px-3 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-white/[0.22] hover:bg-white/[0.045] hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 group-open:border-white/[0.18] group-open:bg-white/[0.035] [&::-webkit-details-marker]:hidden">
+        <span className="inline-flex items-center gap-2.5">
+          <span className="group-open:hidden">{labels.depth}</span>
+          <span className="hidden group-open:inline">{labels.depthClose}</span>
           <span
             aria-hidden="true"
-            className="text-zinc-500 transition-transform group-open:rotate-45"
+            className="grid size-5 shrink-0 place-items-center rounded-[1px] border border-white/[0.14] text-base leading-none text-zinc-300 transition-colors group-open:border-white/[0.28] group-open:text-zinc-50"
           >
-            +
+            <span className="group-open:hidden">+</span>
+            <span className="hidden group-open:block">×</span>
           </span>
-        </summary>
-        <div className="grid gap-6 pt-5 md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)]">
-          <div>
-            <p className="mb-3 text-sm text-zinc-500">{labels.depthIntro}</p>
-            <h5 className="text-sm font-semibold text-zinc-100">
-              {labels.highlights}
-            </h5>
-            <ul className="mt-3 space-y-3 text-sm leading-6 text-zinc-300">
-              {project.highlights.map((highlight) => (
-                <li className="border-l border-white/10 pl-3" key={highlight.en}>
-                  {highlight[locale]}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h5 className="mb-3 text-sm font-semibold text-zinc-100">
-              {labels.fullStack}
-            </h5>
-            <TechnologyList items={project.technologies} />
-          </div>
+        </span>
+      </summary>
+      <div className="grid gap-7 pt-5 md:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+        <div className="space-y-3">
+          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+            {labels.highlights}
+          </h5>
+          <ul className="space-y-3 text-sm leading-6 text-zinc-300">
+            {project.highlights.map((highlight) => (
+              <li className="border-l border-white/10 pl-3" key={highlight.en}>
+                {highlight[locale]}
+              </li>
+            ))}
+          </ul>
         </div>
-      </details>
+        <div className="space-y-3 border-t border-white/[0.08] pt-5 md:border-l md:border-t-0 md:pl-5 md:pt-0">
+          <h5 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
+            {labels.fullStack}
+          </h5>
+          <TechnologyList items={project.technologies} />
+        </div>
+      </div>
+    </details>
+  );
+
+  if (isFrontendCompact) {
+    return (
+      <article className={`${surfaceClass} ${layoutClass}`}>
+        <div className={compactStableRegionClass}>
+          {scanContent}
+          {evidenceAndLinks}
+        </div>
+        {disclosure}
+      </article>
+    );
+  }
+
+  return (
+    <article className={`${surfaceClass} ${layoutClass}`}>
+      {scanContent}
+      {evidenceAndLinks}
+      {disclosure}
     </article>
   );
 }
@@ -319,7 +391,7 @@ function OtherProjectCard({
         <p className="mt-4 text-sm leading-6 text-zinc-300">{summary}</p>
       ) : null}
       <div className="mt-5">
-        <TechnologyList items={project.technologies} />
+        <TechnologyList items={project.technologies} variant="compact" />
       </div>
       <div className="mt-5">
         <ProjectLinks locale={locale} project={project} />
@@ -339,10 +411,52 @@ function ProjectSection({
 }) {
   const labels = copy[locale];
 
+  if (section === "frontend") {
+    const anchorProject = projects.find(
+      (project) => project.id === anchorProjectIds.frontend,
+    );
+    const compactProjects = projects.filter(
+      (project) => project.id !== anchorProjectIds.frontend,
+    );
+
+    return (
+      <section
+        aria-labelledby={`${section}-title`}
+        className="scroll-mt-28 space-y-6"
+      >
+        <h3
+          id={`${section}-title`}
+          className="text-3xl font-semibold tracking-normal text-zinc-50 sm:text-4xl"
+        >
+          {labels[section]}
+        </h3>
+
+        {anchorProject ? (
+          <PrimaryProjectCard
+            locale={locale}
+            project={anchorProject}
+            variant="anchor"
+          />
+        ) : null}
+
+        <div className="grid items-stretch gap-x-8 gap-y-6 lg:grid-cols-2 lg:[&:has(details[open])]:items-start">
+          {compactProjects.map((project) => (
+            <PrimaryProjectCard
+              key={project.id}
+              locale={locale}
+              project={project}
+              variant="compact"
+            />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       aria-labelledby={`${section}-title`}
-      className="scroll-mt-28 space-y-5"
+      className="scroll-mt-28 space-y-6"
     >
       <h3
         id={`${section}-title`}
@@ -351,30 +465,14 @@ function ProjectSection({
         {labels[section]}
       </h3>
 
-      <div
-        className={
-          section === "backend"
-            ? "grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
-            : "grid gap-4 lg:grid-cols-2"
-        }
-      >
+      <div className="space-y-6 lg:space-y-7">
         {projects.map((project) => (
-          <div
-            className={
-              section === "frontend" && isAnchorProject(project)
-                ? "lg:col-span-2"
-                : isAnchorProject(project)
-                  ? "lg:row-span-2"
-                  : ""
-            }
+          <PrimaryProjectCard
             key={project.id}
-          >
-            <PrimaryProjectCard
-              locale={locale}
-              project={project}
-              variant={isAnchorProject(project) ? "anchor" : "compact"}
-            />
-          </div>
+            locale={locale}
+            project={project}
+            variant={isAnchorProject(project) ? "anchor" : "compact"}
+          />
         ))}
       </div>
     </section>
