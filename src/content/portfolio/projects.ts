@@ -35,6 +35,26 @@ export const projects: readonly Project[] = [
         en: "Coordinated tasks and technical criteria for the frontend team, collaborated with backend and QA through feature branches and pull requests, and validated integrations using TypeScript and Expo Doctor.",
       },
     ],
+    media: {
+      poster: {
+        src: "/media/projects/contacto/contacto-poster.webp",
+        alt: {
+          es: "Vista previa visual de Con=Tacto",
+          en: "Visual preview of Con=Tacto",
+        },
+        width: 1280,
+        height: 720,
+      },
+      videoPreview: {
+        src: "/media/projects/contacto/contacto-preview.mp4",
+        label: {
+          es: "Vista previa en video de Con=Tacto",
+          en: "Video preview of Con=Tacto",
+        },
+        width: 1280,
+        height: 720,
+      },
+    },
     links: {
       repository:
         "https://github.com/Juan-Ignacio-Bordignon/Innova-Lav-grupo-5/tree/frontend",

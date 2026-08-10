@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProjectVideoPreview } from "@/components/sections/project-video-preview";
 import { PortraitContactMotion } from "@/components/sections/portrait-contact-motion";
 import { experiences, profile, projects } from "@/content/portfolio";
 import type { Education, Experience, Locale, Project } from "@/content/portfolio";
@@ -44,7 +45,9 @@ const copy = {
     depthIntro: "Highlights y stack completo disponibles para profundizar.",
     email: "Email",
     emailCta: "Escribime por email",
+    enterFullscreen: "Ver en pantalla completa",
     experience: "Experiencia",
+    exitFullscreen: "Salir de pantalla completa",
     externalSuffix: "abre en una nueva pestaña",
     frontend: "Frontend",
     frontendRepository: "Repositorio frontend",
@@ -60,6 +63,10 @@ const copy = {
     moreContributions: "Más contribuciones",
     moreOnGithub: "Más en GitHub",
     otherWork: "Otros proyectos",
+    pausePreview: "Pausar vista previa de video",
+    playPreview: "Reproducir vista previa de video",
+    previewMeta: "Vista previa ·",
+    previewPost: "Video completo en LinkedIn",
     present: "Actualidad",
     primaryCta: "Explorar proyectos",
     portraitAlt: "Retrato de Emanuel Marcello",
@@ -89,7 +96,9 @@ const copy = {
     depthIntro: "Highlights and full stack are available for deeper review.",
     email: "Email",
     emailCta: "Send me an email",
+    enterFullscreen: "View fullscreen",
     experience: "Experience",
+    exitFullscreen: "Exit fullscreen",
     externalSuffix: "opens in a new tab",
     frontend: "Frontend",
     frontendRepository: "Frontend repository",
@@ -105,6 +114,10 @@ const copy = {
     moreContributions: "More contributions",
     moreOnGithub: "More on GitHub",
     otherWork: "Other Work",
+    pausePreview: "Pause video preview",
+    playPreview: "Play video preview",
+    previewMeta: "Preview ·",
+    previewPost: "Full video on LinkedIn",
     present: "Present",
     primaryCta: "Explore projects",
     portraitAlt: "Portrait of Emanuel Marcello",
@@ -361,8 +374,15 @@ function isAnchorProject(project: Project) {
   );
 }
 
-function getProjectLinks(project: Project) {
+function getProjectLinks(
+  project: Project,
+  hiddenLinkKeys: readonly LinkKey[] = [],
+) {
   return linkOrder.flatMap((linkKey) => {
+    if (hiddenLinkKeys.includes(linkKey)) {
+      return [];
+    }
+
     const href = project.links?.[linkKey];
 
     return href ? [{ href, key: linkKey }] : [];
@@ -414,40 +434,63 @@ function EvidenceSurface({
   isAnchor,
   section,
   locale,
+  media,
 }: {
   isAnchor: boolean;
   section: Project["section"];
   locale: Locale;
+  media?: Project["media"];
 }) {
-  const label =
+  const fallbackLabel =
     section === "backend"
       ? copy[locale].technicalPlaceholder
       : copy[locale].mediaPlaceholder;
   const isLargeFrontendAnchor = isAnchor && section === "frontend";
+  const sizeClass = isLargeFrontendAnchor
+    ? "min-h-48 sm:min-h-56 lg:min-h-72"
+    : "min-h-32 sm:min-h-36";
+
+  if (media?.poster && media.videoPreview) {
+    return (
+      <div
+        className={`relative grid place-items-center overflow-hidden rounded-[4px] border border-white/20 bg-white/[0.035] shadow-[0_0_28px_rgba(255,255,255,0.025)] ${sizeClass}`}
+      >
+        <ProjectVideoPreview
+          enterFullscreenLabel={copy[locale].enterFullscreen}
+          exitFullscreenLabel={copy[locale].exitFullscreen}
+          label={media.videoPreview.label[locale]}
+          pauseLabel={copy[locale].pausePreview}
+          playLabel={copy[locale].playPreview}
+          posterSrc={media.poster.src}
+          videoSrc={media.videoPreview.src}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
-      aria-label={label}
+      aria-label={fallbackLabel}
       className={`grid place-items-center rounded-[4px] border border-dashed border-white/20 bg-white/[0.035] px-4 text-center text-xs font-medium uppercase tracking-[0.18em] text-zinc-500 shadow-[0_0_28px_rgba(255,255,255,0.025)] ${
-        isLargeFrontendAnchor
-          ? "min-h-48 sm:min-h-56 lg:min-h-72"
-          : "min-h-32 sm:min-h-36"
+        sizeClass
       }`}
       role="img"
     >
-      {label}
+      {fallbackLabel}
     </div>
   );
 }
 
 function ProjectLinks({
+  hiddenLinkKeys,
   locale,
   project,
 }: {
+  hiddenLinkKeys?: readonly LinkKey[];
   locale: Locale;
   project: Project;
 }) {
-  const links = getProjectLinks(project);
+  const links = getProjectLinks(project, hiddenLinkKeys);
 
   if (links.length === 0) {
     return null;
@@ -475,6 +518,34 @@ function ProjectLinks({
   );
 }
 
+function ProjectMediaCaption({
+  href,
+  locale,
+}: {
+  href: string;
+  locale: Locale;
+}) {
+  const labels = copy[locale];
+
+  return (
+    <p className="text-xs leading-5 text-zinc-500">
+      <span>{labels.previewMeta}</span>{" "}
+      <a
+        className="inline-flex min-h-7 items-center border-b border-white/15 text-zinc-400 transition-colors hover:border-white/35 hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+        href={href}
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <span>{labels.previewPost}</span>
+        <span aria-hidden="true" className="ml-1 text-zinc-500">
+          ↗
+        </span>
+        <span className="sr-only">, {labels.externalSuffix}</span>
+      </a>
+    </p>
+  );
+}
+
 function PrimaryProjectCard({
   locale,
   project,
@@ -490,6 +561,10 @@ function PrimaryProjectCard({
   const isBackend = project.section === "backend";
   const isFrontend = project.section === "frontend";
   const isFrontendCompact = isFrontend && !anchor;
+  const contextualVideoHref =
+    project.id === anchorProjectIds.frontend && project.media?.videoPreview
+      ? project.links?.linkedinPost
+      : undefined;
   const frontendSurface =
     "relative isolate grid gap-6 overflow-hidden rounded-none border border-transparent bg-black/[0.34] px-4 py-7 shadow-[0_28px_90px_rgba(0,0,0,0.46)] before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-none before:bg-no-repeat before:content-[''] before:[background-position:left_top,left_top,right_bottom,right_bottom] sm:px-5 sm:py-8 [&>*]:relative [&>*]:z-[1]";
   const frontendEdge = anchor
@@ -536,12 +611,22 @@ function PrimaryProjectCard({
   );
   const evidenceAndLinks = (
     <div className={`flex min-w-0 flex-col gap-4 ${lowerContentClass}`}>
-      <EvidenceSurface
-        isAnchor={anchor}
+      <div className="flex min-w-0 flex-col gap-2">
+        <EvidenceSurface
+          isAnchor={anchor}
+          locale={locale}
+          media={project.media}
+          section={project.section}
+        />
+        {contextualVideoHref ? (
+          <ProjectMediaCaption href={contextualVideoHref} locale={locale} />
+        ) : null}
+      </div>
+      <ProjectLinks
+        hiddenLinkKeys={contextualVideoHref ? ["linkedinPost"] : undefined}
         locale={locale}
-        section={project.section}
+        project={project}
       />
-      <ProjectLinks locale={locale} project={project} />
     </div>
   );
   const disclosure = (
