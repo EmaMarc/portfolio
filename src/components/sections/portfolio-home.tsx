@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PortraitContactMotion } from "@/components/sections/portrait-contact-motion";
 import { experiences, profile, projects } from "@/content/portfolio";
 import type { Education, Experience, Locale, Project } from "@/content/portfolio";
 
@@ -911,222 +912,246 @@ function ExperienceSection({ locale }: { locale: Locale }) {
   );
 }
 
-function AboutSection({ locale }: { locale: Locale }) {
+function PortraitPlate({
+  locale,
+  portraitLocation,
+}: {
+  locale: Locale;
+  portraitLocation: string;
+}) {
+  const labels = copy[locale];
+
+  return (
+    <figure className="relative isolate mx-auto w-[92%] max-w-[21.5rem] border border-white/[0.055] bg-black/[0.08] p-2 shadow-[inset_0_0_0_1px_rgba(244,244,245,0.016)] before:pointer-events-none before:absolute before:-inset-x-2 before:-inset-y-4 before:-z-10 before:[background:radial-gradient(ellipse_at_44%_42%,rgba(127,29,29,0.06)_0%,rgba(63,63,70,0.032)_35%,rgba(3,3,4,0)_72%)] before:content-[''] min-[390px]:w-[86%] sm:w-[78%] sm:max-w-[23rem] sm:p-2.5 md:w-[62%] md:max-w-[24rem] lg:mx-0 lg:ml-3 lg:w-[88%] lg:max-w-[23.5rem] lg:border-white/[0.065] lg:bg-black/[0.11] lg:before:-inset-x-7 lg:before:-inset-y-6 lg:before:[background:radial-gradient(ellipse_at_44%_42%,rgba(127,29,29,0.105)_0%,rgba(63,63,70,0.044)_36%,rgba(3,3,4,0)_74%)] xl:ml-5 xl:max-w-[25rem]">
+      <div className="relative before:pointer-events-none before:absolute before:-left-1.5 before:-top-1.5 before:z-[2] before:h-8 before:w-16 before:bg-no-repeat before:content-[''] before:[background-image:linear-gradient(90deg,rgba(244,244,245,0.105)_0%,rgba(244,244,245,0.045)_54%,rgba(244,244,245,0)_100%),linear-gradient(180deg,rgba(244,244,245,0.092)_0%,rgba(244,244,245,0.04)_58%,rgba(244,244,245,0)_100%)] before:[background-position:left_top,left_top] before:[background-size:3.75rem_1px,1px_1.875rem] after:pointer-events-none after:absolute after:-bottom-1.5 after:-right-1.5 after:z-[2] after:h-8 after:w-14 after:bg-no-repeat after:content-[''] after:[background-image:linear-gradient(270deg,rgba(244,244,245,0.09)_0%,rgba(127,29,29,0.04)_48%,rgba(244,244,245,0)_100%),linear-gradient(0deg,rgba(244,244,245,0.082)_0%,rgba(127,29,29,0.035)_52%,rgba(244,244,245,0)_100%)] after:[background-position:right_bottom,right_bottom] after:[background-size:3.25rem_1px,1px_1.75rem]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] border border-white/[0.06] bg-zinc-950 shadow-[0_18px_64px_rgba(0,0,0,0.34)] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:z-[1] after:h-[31%] after:[background:linear-gradient(180deg,rgba(3,3,4,0)_0%,rgba(3,3,4,0.10)_42%,rgba(3,3,4,0.54)_76%,rgba(3,3,4,0.88)_100%)] after:content-[''] lg:aspect-[5/6]">
+          <Image
+            alt={labels.portraitAlt}
+            className="object-cover object-[50%_50%]"
+            fill
+            loading="lazy"
+            sizes="(max-width: 389px) calc((100vw - 2rem) * 0.92), (max-width: 639px) calc((100vw - 2rem) * 0.86), (max-width: 1023px) 23rem, (max-width: 1279px) 23.5rem, 25rem"
+            src="/media/profile/emanuel-marcello.png"
+          />
+        </div>
+      </div>
+      <figcaption className="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/[0.055] px-1.5 pb-0.5 pt-2.5 font-mono text-[0.6875rem] leading-5 tracking-[0.08em] text-zinc-500 lg:mt-3 lg:px-1 lg:pt-3">
+        <span className="text-zinc-400">{profile.name}</span>
+        {portraitLocation ? <span>{portraitLocation}</span> : null}
+      </figcaption>
+    </figure>
+  );
+}
+
+function AboutContactSection({ locale }: { locale: Locale }) {
   const labels = copy[locale];
   const story = aboutStoryCopy[locale];
   const portraitLocation = getPortraitLocation();
 
   return (
-    <section
-      aria-labelledby="about-title"
-      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-16 sm:px-6 lg:px-8"
-      id="about"
-    >
-      <h2
-        className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
-        id="about-title"
-      >
-        {labels.about}
-      </h2>
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="lg:grid lg:grid-cols-[minmax(17rem,0.42fr)_minmax(0,0.58fr)] lg:gap-x-16">
+        <section aria-labelledby="about-title" className="contents">
+          <div
+            className="scroll-mt-28 border-t border-white/10 pt-16 lg:col-span-full"
+            id="about"
+          >
+            <h2
+              className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+              id="about-title"
+            >
+              {labels.about}
+            </h2>
+          </div>
 
-      <div className="mt-12 grid gap-x-10 gap-y-14 lg:grid-cols-[minmax(17rem,0.42fr)_minmax(0,0.58fr)] lg:gap-x-16 lg:gap-y-12">
-        <div className="order-2 lg:order-1 lg:row-span-2">
-          <figure className="relative isolate mx-auto w-[92%] max-w-[21.5rem] border border-white/[0.055] bg-black/[0.08] p-2 shadow-[inset_0_0_0_1px_rgba(244,244,245,0.016)] before:pointer-events-none before:absolute before:-inset-x-2 before:-inset-y-4 before:-z-10 before:[background:radial-gradient(ellipse_at_44%_42%,rgba(127,29,29,0.06)_0%,rgba(63,63,70,0.032)_35%,rgba(3,3,4,0)_72%)] before:content-[''] min-[390px]:w-[86%] sm:w-[78%] sm:max-w-[23rem] sm:p-2.5 md:w-[62%] md:max-w-[24rem] lg:sticky lg:top-24 lg:mx-0 lg:ml-3 lg:w-[88%] lg:max-w-[23.5rem] lg:border-white/[0.065] lg:bg-black/[0.11] lg:before:-inset-x-7 lg:before:-inset-y-6 lg:before:[background:radial-gradient(ellipse_at_44%_42%,rgba(127,29,29,0.105)_0%,rgba(63,63,70,0.044)_36%,rgba(3,3,4,0)_74%)] xl:ml-5 xl:max-w-[25rem]">
-            <div className="relative before:pointer-events-none before:absolute before:-left-1.5 before:-top-1.5 before:z-[2] before:h-8 before:w-16 before:bg-no-repeat before:content-[''] before:[background-image:linear-gradient(90deg,rgba(244,244,245,0.105)_0%,rgba(244,244,245,0.045)_54%,rgba(244,244,245,0)_100%),linear-gradient(180deg,rgba(244,244,245,0.092)_0%,rgba(244,244,245,0.04)_58%,rgba(244,244,245,0)_100%)] before:[background-position:left_top,left_top] before:[background-size:3.75rem_1px,1px_1.875rem] after:pointer-events-none after:absolute after:-bottom-1.5 after:-right-1.5 after:z-[2] after:h-8 after:w-14 after:bg-no-repeat after:content-[''] after:[background-image:linear-gradient(270deg,rgba(244,244,245,0.09)_0%,rgba(127,29,29,0.04)_48%,rgba(244,244,245,0)_100%),linear-gradient(0deg,rgba(244,244,245,0.082)_0%,rgba(127,29,29,0.035)_52%,rgba(244,244,245,0)_100%)] after:[background-position:right_bottom,right_bottom] after:[background-size:3.25rem_1px,1px_1.75rem]">
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2px] border border-white/[0.06] bg-zinc-950 shadow-[0_18px_64px_rgba(0,0,0,0.34)] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:z-[1] after:h-[31%] after:[background:linear-gradient(180deg,rgba(3,3,4,0)_0%,rgba(3,3,4,0.10)_42%,rgba(3,3,4,0.54)_76%,rgba(3,3,4,0.88)_100%)] after:content-[''] lg:aspect-[5/6]">
-                <Image
-                  alt={labels.portraitAlt}
-                  className="object-cover object-[50%_50%]"
-                  fill
-                  loading="lazy"
-                  sizes="(max-width: 389px) calc((100vw - 2rem) * 0.92), (max-width: 639px) calc((100vw - 2rem) * 0.86), (max-width: 1023px) 23rem, (max-width: 1279px) 23.5rem, 25rem"
-                  src="/media/profile/emanuel-marcello.png"
-                />
-              </div>
-            </div>
-            <figcaption className="mt-2 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-white/[0.055] px-1.5 pb-0.5 pt-2.5 font-mono text-[0.6875rem] leading-5 tracking-[0.08em] text-zinc-500 lg:mt-3 lg:px-1 lg:pt-3">
-              <span className="text-zinc-400">{profile.name}</span>
-              {portraitLocation ? <span>{portraitLocation}</span> : null}
-            </figcaption>
-          </figure>
-        </div>
-
-        <div className="order-1 min-w-0 lg:order-2">
-          <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
-            {profile.professionalTitle[locale]}
-          </p>
-
-          <div className="mt-5 max-w-3xl">
-            <p className="text-lg leading-9 text-zinc-100 sm:text-xl sm:leading-10">
-              {story.lead}
+          <div className="mt-12 min-w-0 lg:col-start-2 lg:row-start-2">
+            <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+              {profile.professionalTitle[locale]}
             </p>
 
-            <div className="mt-8 space-y-7 border-t border-white/[0.08] pt-7">
-              <div className="space-y-3">
-                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
-                  {story.workLabel}
-                </p>
-                <p className="text-base leading-8 text-zinc-300">
-                  {story.work}
-                </p>
-              </div>
+            <div className="mt-5 max-w-3xl">
+              <p className="text-lg leading-9 text-zinc-100 sm:text-xl sm:leading-10">
+                {story.lead}
+              </p>
 
-              <div className="space-y-3">
-                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
-                  {story.currentlyLabel}
-                </p>
-                <p className="text-base leading-8 text-zinc-300">
-                  {story.currently}
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
-                  {story.outsideLabel}
-                </p>
-                <div className="space-y-2">
+              <div className="mt-8 space-y-7 border-t border-white/[0.08] pt-7">
+                <div className="space-y-3">
+                  <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                    {story.workLabel}
+                  </p>
                   <p className="text-base leading-8 text-zinc-300">
-                    {story.outside}
+                    {story.work}
                   </p>
-                  <p className="font-mono text-xs font-medium tracking-[0.08em] text-zinc-500">
-                    {story.outsideShort}
+                </div>
+
+                <div className="space-y-3">
+                  <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                    {story.currentlyLabel}
                   </p>
+                  <p className="text-base leading-8 text-zinc-300">
+                    {story.currently}
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
+                    {story.outsideLabel}
+                  </p>
+                  <div className="space-y-2">
+                    <p className="text-base leading-8 text-zinc-300">
+                      {story.outside}
+                    </p>
+                    <p className="font-mono text-xs font-medium tracking-[0.08em] text-zinc-500">
+                      {story.outsideShort}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="order-3 min-w-0 space-y-8 lg:order-3 lg:pt-2">
-          <section aria-labelledby="about-education-title">
-            <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
-              id="about-education-title"
-            >
-              {labels.studies}
-            </h3>
-            <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
-              {profile.education.map((education, index) => (
-                <li className="py-4" key={education.id}>
-                  <p
-                    className={
-                      index === 0
-                        ? "text-lg font-medium text-zinc-100"
-                        : "text-sm font-medium text-zinc-400"
-                    }
-                  >
-                    {education.title[locale]}
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-zinc-500">
-                    {education.institution}
-                  </p>
-                  <p className="mt-2 font-mono text-xs text-zinc-500">
-                    {formatYearPeriod(education.period, locale)}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </section>
+          <PortraitContactMotion className="mt-14 lg:col-start-1 lg:row-start-2 lg:row-span-3 lg:mt-12 lg:self-stretch">
+            <PortraitPlate
+              locale={locale}
+              portraitLocation={portraitLocation}
+            />
+          </PortraitContactMotion>
 
-          <section aria-labelledby="about-languages-title">
-            <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
-              id="about-languages-title"
-            >
-              {labels.languages}
-            </h3>
-            <ul className="mt-4 space-y-3 border-t border-white/[0.08] pt-4">
-              {profile.languages.map((language) => (
-                <li className="text-sm leading-6" key={language.id}>
-                  <p className="text-zinc-300">
-                    <span className="font-medium text-zinc-100">
-                      {language.name[locale]}
-                    </span>
-                    <span className="text-zinc-500"> — </span>
-                    <span>{language.proficiency[locale]}</span>
-                  </p>
-                  {language.note ? (
-                    <p className="mt-1 text-zinc-500">{language.note[locale]}</p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section aria-labelledby="about-credentials-title">
-            <h3
-              className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
-              id="about-credentials-title"
-            >
-              {labels.selectedCredentials}
-            </h3>
-            <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
-              {selectedCredentials.map((credential) => (
-                <li
-                  className="flex min-w-0 items-start gap-4 py-4"
-                  key={credential.id}
-                >
-                  <a
-                    aria-label={`${labels.viewPost}: ${credential.name[locale]}`}
-                    className="relative h-24 w-28 shrink-0 overflow-hidden rounded-[3px] border border-white/[0.1] bg-white/[0.02] transition hover:border-white/25 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
-                    href={credential.postUrl}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <Image
-                      alt={credential.image.alt[locale]}
-                      className="object-contain p-1"
-                      fill
-                      loading="lazy"
-                      sizes="7rem"
-                      src={`/media/credentials/${credential.image.filename}`}
-                    />
-                  </a>
-
-                  <div className="min-w-0 pt-0.5">
-                    <p className="text-sm font-medium text-zinc-200">
-                      {credential.name[locale]}
+          <div className="mt-14 min-w-0 space-y-8 lg:col-start-2 lg:row-start-3 lg:mt-12 lg:pt-2">
+            <section aria-labelledby="about-education-title">
+              <h3
+                className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
+                id="about-education-title"
+              >
+                {labels.studies}
+              </h3>
+              <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
+                {profile.education.map((education, index) => (
+                  <li className="py-4" key={education.id}>
+                    <p
+                      className={
+                        index === 0
+                          ? "text-lg font-medium text-zinc-100"
+                          : "text-sm font-medium text-zinc-400"
+                      }
+                    >
+                      {education.title[locale]}
                     </p>
                     <p className="mt-1 text-sm leading-6 text-zinc-500">
-                      {credential.institution[locale]}
+                      {education.institution}
                     </p>
-                    {credential.meta ? (
-                      <p className="mt-2 font-mono text-xs text-zinc-500">
-                        {credential.meta}
+                    <p className="mt-2 font-mono text-xs text-zinc-500">
+                      {formatYearPeriod(education.period, locale)}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </section>
+
+            <section aria-labelledby="about-languages-title">
+              <h3
+                className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
+                id="about-languages-title"
+              >
+                {labels.languages}
+              </h3>
+              <ul className="mt-4 space-y-3 border-t border-white/[0.08] pt-4">
+                {profile.languages.map((language) => (
+                  <li className="text-sm leading-6" key={language.id}>
+                    <p className="text-zinc-300">
+                      <span className="font-medium text-zinc-100">
+                        {language.name[locale]}
+                      </span>
+                      <span className="text-zinc-500"> — </span>
+                      <span>{language.proficiency[locale]}</span>
+                    </p>
+                    {language.note ? (
+                      <p className="mt-1 text-zinc-500">
+                        {language.note[locale]}
                       </p>
                     ) : null}
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section aria-labelledby="about-credentials-title">
+              <h3
+                className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
+                id="about-credentials-title"
+              >
+                {labels.selectedCredentials}
+              </h3>
+              <ol className="mt-4 divide-y divide-white/[0.08] border-t border-white/[0.08]">
+                {selectedCredentials.map((credential) => (
+                  <li
+                    className="flex min-w-0 items-start gap-4 py-4"
+                    key={credential.id}
+                  >
                     <a
-                      aria-label={`${labels.viewPost}: ${credential.name[locale]}, ${labels.externalSuffix}`}
-                      className="mt-3 inline-flex min-h-8 items-center border-b border-white/10 text-sm font-medium text-zinc-300 transition-colors hover:border-white/35 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                      aria-label={`${labels.viewPost}: ${credential.name[locale]}`}
+                      className="relative h-24 w-28 shrink-0 overflow-hidden rounded-[3px] border border-white/[0.1] bg-white/[0.02] transition hover:border-white/25 hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
                       href={credential.postUrl}
                       rel="noopener noreferrer"
                       target="_blank"
                     >
-                      {labels.viewPost}
-                      <span aria-hidden="true" className="ml-1 text-zinc-500">
-                        ↗
-                      </span>
+                      <Image
+                        alt={credential.image.alt[locale]}
+                        className="object-contain p-1"
+                        fill
+                        loading="lazy"
+                        sizes="7rem"
+                        src={`/media/credentials/${credential.image.filename}`}
+                      />
                     </a>
-                  </div>
-                </li>
-              ))}
-            </ol>
-            <a
-              className="mt-4 inline-flex min-h-9 items-center border-b border-white/10 text-sm font-medium text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
-              href={moreCertificationsUrl}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {labels.moreCertifications}
-              <span aria-hidden="true" className="ml-1 text-zinc-500">
-                ↗
-              </span>
-              <span className="sr-only">, {labels.externalSuffix}</span>
-            </a>
-          </section>
-        </div>
+
+                    <div className="min-w-0 pt-0.5">
+                      <p className="text-sm font-medium text-zinc-200">
+                        {credential.name[locale]}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-zinc-500">
+                        {credential.institution[locale]}
+                      </p>
+                      {credential.meta ? (
+                        <p className="mt-2 font-mono text-xs text-zinc-500">
+                          {credential.meta}
+                        </p>
+                      ) : null}
+                      <a
+                        aria-label={`${labels.viewPost}: ${credential.name[locale]}, ${labels.externalSuffix}`}
+                        className="mt-3 inline-flex min-h-8 items-center border-b border-white/10 text-sm font-medium text-zinc-300 transition-colors hover:border-white/35 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                        href={credential.postUrl}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {labels.viewPost}
+                        <span aria-hidden="true" className="ml-1 text-zinc-500">
+                          ↗
+                        </span>
+                      </a>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <a
+                className="mt-4 inline-flex min-h-9 items-center border-b border-white/10 text-sm font-medium text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                href={moreCertificationsUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {labels.moreCertifications}
+                <span aria-hidden="true" className="ml-1 text-zinc-500">
+                  ↗
+                </span>
+                <span className="sr-only">, {labels.externalSuffix}</span>
+              </a>
+            </section>
+          </div>
+        </section>
+
+        <ContactSection locale={locale} />
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -1136,10 +1161,10 @@ function ContactSection({ locale }: { locale: Locale }) {
   return (
     <section
       aria-labelledby="contact-title"
-      className="mx-auto w-full max-w-6xl scroll-mt-28 border-t border-white/10 px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-36"
+      className="mt-16 scroll-mt-28 border-t border-white/10 py-24 sm:py-28 lg:col-start-2 lg:row-start-4 lg:mt-20 lg:py-36"
       id="contact"
     >
-      <div className="grid gap-14 lg:grid-cols-[minmax(0,0.72fr)_minmax(14rem,0.28fr)] lg:items-end lg:gap-16">
+      <div className="grid gap-14">
         <div className="min-w-0">
           <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
             {labels.contact}
@@ -1176,7 +1201,7 @@ function ContactSection({ locale }: { locale: Locale }) {
         </div>
 
         {profile.links?.linkedin || profile.links?.github ? (
-          <aside className="border-t border-white/[0.08] pt-6 lg:border-l lg:border-t-0 lg:pl-8">
+          <aside className="border-t border-white/[0.08] pt-6">
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
               {labels.contactChannels}
             </p>
@@ -1305,8 +1330,7 @@ export function PortfolioHome({ locale }: PortfolioHomeProps) {
       <HeroSection locale={locale} />
       <WorkSection locale={locale} />
       <ExperienceSection locale={locale} />
-      <AboutSection locale={locale} />
-      <ContactSection locale={locale} />
+      <AboutContactSection locale={locale} />
       <PortfolioFooter locale={locale} />
     </main>
   );
