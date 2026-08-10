@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import "lenis/dist/lenis.css";
 import { SiteNavbar } from "@/components/layout/site-navbar";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { LycorisAtmosphere } from "@/components/visual-effects/lycoris-atmosphere";
 import { PortfolioAtmosphere } from "@/components/visual-effects/portfolio-atmosphere";
 import { isSupportedLocale, supportedLocales } from "@/lib/locale";
 import { fontVariables } from "../fonts";
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
     >
       <body className="relative isolate flex min-h-full flex-col bg-background text-foreground">
         <PortfolioAtmosphere />
+        <LycorisAtmosphere />
         <SmoothScroll />
         <div className="relative z-10 flex min-h-full flex-1 flex-col">
           <SiteNavbar locale={locale} />

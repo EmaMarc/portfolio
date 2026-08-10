@@ -1,0 +1,142 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.imageFrame,
+.glow {
+  position: absolute;
+  left: 50%;
+  bottom: -6vh;
+  width: min(168vw, 46rem);
+  aspect-ratio: 1472 / 1123;
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+  contain: layout paint style;
+}
+
+.imageFrame {
+  z-index: 2;
+  opacity: 0.14;
+  filter: blur(13px);
+  transform: translate3d(-50%, 0, 0) translate3d(3vw, -6vh, 0)
+    scale(1.24);
+}
+
+.image {
+  object-fit: contain;
+  object-position: center;
+  user-select: none;
+}
+
+.glow {
+  z-index: 1;
+  opacity: 0.08;
+  filter: blur(14px);
+  transform: translate3d(-50%, 0, 0) translate3d(2vw, -5vh, 0)
+    scale(1.08);
+}
+
+.glow::before,
+.glow::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.glow::before {
+  inset: -24%;
+  background: radial-gradient(
+    ellipse at 52% 48%,
+    rgba(122, 18, 42, 0.32) 0%,
+    rgba(83, 16, 34, 0.18) 31%,
+    rgba(44, 8, 18, 0.08) 54%,
+    rgba(3, 3, 4, 0) 76%
+  );
+}
+
+.glow::after {
+  inset: 4% 8%;
+  background: radial-gradient(
+    ellipse at 53% 45%,
+    rgba(190, 24, 48, 0.24) 0%,
+    rgba(127, 29, 29, 0.13) 28%,
+    rgba(69, 10, 10, 0.04) 55%,
+    rgba(3, 3, 4, 0) 72%
+  );
+}
+
+@media (max-width: 1023px) {
+  .imageFrame,
+  .glow {
+    transition:
+      filter 900ms ease,
+      opacity 900ms ease;
+  }
+
+  .root[data-mobile-state="hero"] .imageFrame {
+    opacity: 0.22;
+    filter: blur(5px);
+  }
+
+  .root[data-mobile-state="hero"] .glow {
+    opacity: 0.09;
+    filter: blur(13px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .imageFrame,
+  .glow {
+    width: clamp(44rem, 54vw, 66rem);
+    transition: none;
+  }
+
+  .imageFrame {
+    opacity: 0.64;
+    filter: blur(0.2px);
+    transform: translate3d(-50%, 0, 0) translate3d(7vw, -1.5vh, 0)
+      scale(1.25);
+  }
+
+  .glow {
+    opacity: 0.42;
+    filter: blur(10px);
+    transform: translate3d(-50%, 0, 0) translate3d(5vw, -1vh, 0)
+      scale(1.02);
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+  .imageFrame,
+  .glow {
+    will-change: transform, opacity, filter;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageFrame,
+  .glow {
+    width: min(160vw, 58rem);
+    transition: none;
+    will-change: auto;
+  }
+
+  .imageFrame {
+    opacity: 0.14;
+    filter: blur(13px);
+    transform: translate3d(-50%, 0, 0) translate3d(3vw, -6vh, 0)
+      scale(1.24);
+  }
+
+  .glow {
+    opacity: 0.08;
+    filter: blur(14px);
+    transform: translate3d(-50%, 0, 0) translate3d(2vw, -5vh, 0)
+      scale(1.06);
+  }
+}

@@ -1282,8 +1282,8 @@ function HeroSection({ locale }: { locale: Locale }) {
   const hero = heroCopy[locale];
 
   return (
-    <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.54fr)_minmax(0,0.46fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[32svh]">
-      <div className="max-w-4xl">
+    <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[24svh] xl:gap-20">
+      <div className="max-w-4xl lg:max-w-[35rem]">
         <p className="text-base font-medium text-zinc-300">
           {hero.role}
         </p>
