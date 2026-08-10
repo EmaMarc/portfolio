@@ -83,6 +83,11 @@ export type Project = {
   technologies: readonly string[];
   highlights: readonly LocalizedText[];
   media?: {
+    contextualCta?: {
+      linkKey: "linkedinPost";
+      metadata: LocalizedText;
+      label: LocalizedText;
+    };
     poster?: ImageAsset;
     videoPreview?: VideoAsset;
     screenshots?: readonly ImageAsset[];

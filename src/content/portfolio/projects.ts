@@ -36,6 +36,17 @@ export const projects: readonly Project[] = [
       },
     ],
     media: {
+      contextualCta: {
+        linkKey: "linkedinPost",
+        metadata: {
+          es: "Vista previa ·",
+          en: "Preview ·",
+        },
+        label: {
+          es: "Ver video completo en LinkedIn",
+          en: "Watch full video on LinkedIn",
+        },
+      },
       poster: {
         src: "/media/projects/contacto/contacto-poster.webp",
         alt: {
@@ -98,6 +109,28 @@ export const projects: readonly Project[] = [
         en: "Structured the frontend using pages, services, models, guards, and reusable components, working with TypeScript, RxJS, and a collaborative Git workflow based on the develop branch.",
       },
     ],
+    media: {
+      contextualCta: {
+        linkKey: "linkedinPost",
+        metadata: {
+          es: "Imagen del proyecto ·",
+          en: "Project preview ·",
+        },
+        label: {
+          es: "Ver video completo en LinkedIn",
+          en: "Watch full video on LinkedIn",
+        },
+      },
+      poster: {
+        src: "/media/projects/manny/manny-business-flow.webp",
+        alt: {
+          es: "Detalle de maquinaria y flujo de reserva en Manny Maquinarias",
+          en: "Machinery detail and booking flow in Manny Maquinarias",
+        },
+        width: 1260,
+        height: 700,
+      },
+    },
     links: {
       frontendRepository: "https://github.com/juanmasisti/Alquileres-Front",
       backendRepository: "https://github.com/facu-carri/Alquileres-Back",
@@ -134,6 +167,17 @@ export const projects: readonly Project[] = [
         en: "Implemented a responsive interface with Tailwind CSS and interactions such as modals and notifications, along with API integration and basic accessibility and SEO considerations.",
       },
     ],
+    media: {
+      poster: {
+        src: "/media/projects/mythica/mythica-poster.webp",
+        alt: {
+          es: "Catálogo y filtros de libros en Mythica Books",
+          en: "Book catalog and filters in Mythica Books",
+        },
+        width: 1280,
+        height: 716,
+      },
+    },
     links: {
       repository: "https://github.com/EmaMarc/React_eCommerce",
     },

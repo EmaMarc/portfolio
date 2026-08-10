@@ -65,8 +65,6 @@ const copy = {
     otherWork: "Otros proyectos",
     pausePreview: "Pausar vista previa de video",
     playPreview: "Reproducir vista previa de video",
-    previewMeta: "Vista previa ·",
-    previewPost: "Video completo en LinkedIn",
     present: "Actualidad",
     primaryCta: "Explorar proyectos",
     portraitAlt: "Retrato de Emanuel Marcello",
@@ -116,8 +114,6 @@ const copy = {
     otherWork: "Other Work",
     pausePreview: "Pause video preview",
     playPreview: "Play video preview",
-    previewMeta: "Preview ·",
-    previewPost: "Full video on LinkedIn",
     present: "Present",
     primaryCta: "Explore projects",
     portraitAlt: "Portrait of Emanuel Marcello",
@@ -389,6 +385,18 @@ function getProjectLinks(
   });
 }
 
+function getProjectMediaCta(project: Project) {
+  const contextualCta = project.media?.contextualCta;
+
+  if (!contextualCta) {
+    return undefined;
+  }
+
+  const href = project.links?.[contextualCta.linkKey];
+
+  return href ? { ...contextualCta, href } : undefined;
+}
+
 function TechnologyList({
   items,
   variant = "inline",
@@ -449,6 +457,9 @@ function EvidenceSurface({
   const sizeClass = isLargeFrontendAnchor
     ? "min-h-48 sm:min-h-56 lg:min-h-72"
     : "min-h-32 sm:min-h-36";
+  const imageSizes = isLargeFrontendAnchor
+    ? "(max-width: 1023px) calc(100vw - 2rem), 52vw"
+    : "(max-width: 1023px) calc(100vw - 2rem), (max-width: 1279px) 44vw, 34rem";
 
   if (media?.poster && media.videoPreview) {
     return (
@@ -463,6 +474,25 @@ function EvidenceSurface({
           playLabel={copy[locale].playPreview}
           posterSrc={media.poster.src}
           videoSrc={media.videoPreview.src}
+        />
+      </div>
+    );
+  }
+
+  if (media?.poster) {
+    return (
+      <div
+        className={`relative grid place-items-center overflow-hidden rounded-[4px] border border-white/20 bg-white/[0.035] shadow-[0_0_28px_rgba(255,255,255,0.025)] ${sizeClass}`}
+      >
+        <Image
+          alt={media.poster.alt[locale]}
+          className="absolute inset-0 h-full w-full object-cover"
+          decoding="async"
+          height={media.poster.height}
+          loading="lazy"
+          sizes={imageSizes}
+          src={media.poster.src}
+          width={media.poster.width}
         />
       </div>
     );
@@ -519,25 +549,27 @@ function ProjectLinks({
 }
 
 function ProjectMediaCaption({
+  cta,
   href,
   locale,
 }: {
+  cta: NonNullable<NonNullable<Project["media"]>["contextualCta"]>;
   href: string;
   locale: Locale;
 }) {
   const labels = copy[locale];
 
   return (
-    <p className="text-xs leading-5 text-zinc-500">
-      <span>{labels.previewMeta}</span>{" "}
+    <p className="text-xs leading-5">
+      <span className="text-zinc-500">{cta.metadata[locale]}</span>{" "}
       <a
-        className="inline-flex min-h-7 items-center border-b border-white/15 text-zinc-400 transition-colors hover:border-white/35 hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+        className="inline-flex min-h-7 items-center border-b border-white/35 font-medium text-zinc-100 transition-colors hover:border-white/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
         href={href}
         rel="noopener noreferrer"
         target="_blank"
       >
-        <span>{labels.previewPost}</span>
-        <span aria-hidden="true" className="ml-1 text-zinc-500">
+        <span>{cta.label[locale]}</span>
+        <span aria-hidden="true" className="ml-1 text-zinc-400">
           ↗
         </span>
         <span className="sr-only">, {labels.externalSuffix}</span>
@@ -561,10 +593,7 @@ function PrimaryProjectCard({
   const isBackend = project.section === "backend";
   const isFrontend = project.section === "frontend";
   const isFrontendCompact = isFrontend && !anchor;
-  const contextualVideoHref =
-    project.id === anchorProjectIds.frontend && project.media?.videoPreview
-      ? project.links?.linkedinPost
-      : undefined;
+  const mediaCta = getProjectMediaCta(project);
   const frontendSurface =
     "relative isolate grid gap-6 overflow-hidden rounded-none border border-transparent bg-black/[0.34] px-4 py-7 shadow-[0_28px_90px_rgba(0,0,0,0.46)] before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-none before:bg-no-repeat before:content-[''] before:[background-position:left_top,left_top,right_bottom,right_bottom] sm:px-5 sm:py-8 [&>*]:relative [&>*]:z-[1]";
   const frontendEdge = anchor
@@ -618,12 +647,16 @@ function PrimaryProjectCard({
           media={project.media}
           section={project.section}
         />
-        {contextualVideoHref ? (
-          <ProjectMediaCaption href={contextualVideoHref} locale={locale} />
+        {mediaCta ? (
+          <ProjectMediaCaption
+            cta={mediaCta}
+            href={mediaCta.href}
+            locale={locale}
+          />
         ) : null}
       </div>
       <ProjectLinks
-        hiddenLinkKeys={contextualVideoHref ? ["linkedinPost"] : undefined}
+        hiddenLinkKeys={mediaCta ? [mediaCta.linkKey] : undefined}
         locale={locale}
         project={project}
       />
