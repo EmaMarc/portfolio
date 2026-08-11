@@ -19,6 +19,13 @@ const activeSectionActivationRatio = 0.44;
 const activeSectionRootMargin = "-43% 0px -56% 0px";
 const currentSectionLinkClass =
   "text-white [text-shadow:0_0_8px_rgba(220,38,38,0.45)] after:scale-x-100 after:bg-[rgba(220,38,38,0.96)] hover:text-white hover:after:bg-[rgba(220,38,38,0.96)]";
+const brandTextClass = "font-brand font-normal";
+const menuItemOpenDelayClasses = [
+  "delay-[70ms]",
+  "delay-[105ms]",
+  "delay-[140ms]",
+  "delay-[175ms]",
+] as const;
 
 const navCopy = {
   es: {
@@ -28,8 +35,8 @@ const navCopy = {
     current: "actual",
     experience: "Experiencia",
     language: "Idioma",
-    menu: "Menu",
     navigation: "Navegacion principal",
+    openMenu: "Abrir menu",
     work: "Proyectos",
   },
   en: {
@@ -39,8 +46,8 @@ const navCopy = {
     current: "current",
     experience: "Experience",
     language: "Language",
-    menu: "Menu",
     navigation: "Primary navigation",
+    openMenu: "Open menu",
     work: "Work",
   },
 } satisfies Record<
@@ -52,8 +59,8 @@ const navCopy = {
     | "current"
     | "experience"
     | "language"
-    | "menu"
     | "navigation"
+    | "openMenu"
     | "work",
     string
   >
@@ -65,6 +72,7 @@ type SiteNavbarProps = {
 
 type LanguageSelectorProps = {
   copy: (typeof navCopy)[Locale];
+  isInteractive?: boolean;
   locale: Locale;
   onNavigate?: () => void;
 };
@@ -86,6 +94,7 @@ function LogoSlot() {
 
 function LanguageSelector({
   copy,
+  isInteractive = true,
   locale,
   onNavigate,
 }: LanguageSelectorProps) {
@@ -126,6 +135,7 @@ function LanguageSelector({
                   : "border-transparent text-zinc-500 hover:text-zinc-50"
               }`}
               onClick={() => handleLocaleChange(option)}
+              tabIndex={isInteractive ? undefined : -1}
               type="button"
             >
               {option.toUpperCase()}
@@ -337,6 +347,12 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
       />
 
       <header className="sticky top-0 z-50 px-3 py-3 sm:px-5 lg:px-8">
+        <span
+          aria-hidden="true"
+          className={`pointer-events-none fixed inset-0 z-40 bg-[rgba(20,5,9,0.32)] backdrop-blur-[10px] transition-opacity duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none md:hidden ${
+            isMenuOpen ? "opacity-100" : "opacity-0"
+          }`}
+        />
         <div
           className={`relative mx-auto hidden h-14 w-full max-w-none text-zinc-100 ${desktopNavLayoutClass}`}
           ref={desktopNavRef}
@@ -361,7 +377,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
               href={getLocalizedHref(locale, "#top")}
             >
               <LogoSlot />
-              Ema Marc
+              <span className={brandTextClass}>Ema Marc</span>
             </Link>
           </div>
 
@@ -414,56 +430,108 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
           </div>
         </div>
 
-        <div className="mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-3 rounded-full border border-white/10 bg-black/55 px-3 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md sm:px-4 md:hidden">
-          <Link
-            className="inline-flex min-h-11 items-center rounded-full px-2 text-base font-semibold tracking-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-            href={getLocalizedHref(locale, "#top")}
-          >
-            Ema Marc
-          </Link>
-
-          <button
-            aria-controls="mobile-menu"
-            aria-expanded={isMenuOpen}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/10 px-4 text-sm font-medium text-zinc-100 transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-            onClick={() => setIsMenuOpen((current) => !current)}
-            type="button"
-          >
-            {isMenuOpen ? copy.closeMenu : copy.menu}
-          </button>
-        </div>
-
-        {isMenuOpen ? (
+        <div className="relative z-50 mx-auto w-full max-w-6xl md:hidden">
           <div
-            className="mx-auto mt-2 w-full max-w-6xl rounded-3xl border border-white/10 bg-black/70 p-3 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.26)] backdrop-blur-md md:hidden"
+            className={`flex min-h-14 items-center justify-between gap-4 border-b px-2 text-zinc-100 sm:px-3 ${
+              isAtTop
+                ? "border-white/[0.08] bg-transparent"
+                : "border-white/[0.12] bg-black/[0.18] backdrop-blur-[6px]"
+            }`}
+          >
+            <Link
+              className="inline-flex min-h-11 items-center px-1 text-base font-semibold tracking-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+              href={getLocalizedHref(locale, "#top")}
+            >
+              <span className={brandTextClass}>Ema Marc</span>
+            </Link>
+
+            <button
+              aria-label={isMenuOpen ? copy.closeMenu : copy.openMenu}
+              aria-controls="mobile-menu"
+              aria-expanded={isMenuOpen}
+              className={`group relative inline-flex min-h-11 w-11 shrink-0 items-center justify-center px-1 transition-colors duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100 ${
+                isMenuOpen
+                  ? "text-zinc-50"
+                  : "text-zinc-300 hover:text-zinc-50 focus-visible:text-zinc-50"
+              }`}
+              onClick={() => setIsMenuOpen((current) => !current)}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className={`absolute left-1/2 top-1/2 h-px origin-center bg-current transition-[translate,rotate,width] duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                  isMenuOpen
+                    ? "w-[1.125rem] -translate-x-1/2 -translate-y-1/2 rotate-45"
+                    : "w-5 -translate-x-[54%] -translate-y-1.5 rotate-0"
+                }`}
+              />
+              <span
+                aria-hidden="true"
+                className={`absolute left-1/2 top-1/2 h-px origin-center bg-current transition-[translate,rotate,width] duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+                  isMenuOpen
+                    ? "w-[1.125rem] -translate-x-1/2 -translate-y-1/2 -rotate-45"
+                    : "w-4 -translate-x-[38%] translate-y-1.5 rotate-0"
+                }`}
+              />
+            </button>
+          </div>
+
+          <div
+            aria-hidden={!isMenuOpen}
+            className={`absolute left-1/2 top-full z-50 w-screen -translate-x-1/2 overflow-hidden text-zinc-100 transition-[clip-path,opacity,translate,visibility] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+              isMenuOpen
+                ? "visible pointer-events-auto translate-y-0 opacity-100 duration-[340ms] [clip-path:inset(0_0_0_0)]"
+                : "invisible pointer-events-none -translate-y-1 opacity-0 duration-[220ms] [clip-path:inset(0_0_100%_0)]"
+            }`}
             id="mobile-menu"
           >
-            <nav aria-label={copy.navigation} className="flex flex-col gap-1">
-              {sectionLinks.map((link) => {
-                const isCurrent = activeSection === link.key;
+            <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-9 sm:px-8">
+              <nav
+                aria-label={copy.navigation}
+                className="flex flex-col items-start gap-5"
+              >
+                {sectionLinks.map((link, index) => {
+                  const isCurrent = activeSection === link.key;
 
-                return (
-                  <Link
-                    aria-current={isCurrent ? "location" : undefined}
-                    className="rounded-2xl px-4 py-3 text-base font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-                    href={getLocalizedHref(locale, link.href)}
-                    key={link.key}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {copy[link.key]}
-                  </Link>
-                );
-              })}
-            </nav>
-            <div className="mt-3 border-t border-white/10 pt-3">
-              <LanguageSelector
-                copy={copy}
-                locale={locale}
-                onNavigate={() => setIsMenuOpen(false)}
-              />
+                  return (
+                    <Link
+                      aria-current={isCurrent ? "location" : undefined}
+                      className={`relative inline-flex min-h-14 shrink-0 items-center px-1 py-2 text-xl font-medium leading-tight tracking-normal transition-[color,opacity,translate] ease-[cubic-bezier(0.22,1,0.36,1)] after:pointer-events-none after:absolute after:inset-x-1 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:transition-transform after:duration-200 after:ease-out after:content-[''] motion-reduce:translate-y-0 motion-reduce:transition-none motion-reduce:after:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 ${
+                        isMenuOpen
+                          ? `translate-y-0 opacity-100 duration-[210ms] ${menuItemOpenDelayClasses[index]}`
+                          : "delay-0 -translate-y-2 opacity-0 duration-[120ms]"
+                      } ${
+                        isCurrent
+                          ? currentSectionLinkClass
+                          : "text-zinc-400 after:bg-white/[0.24] hover:text-zinc-50 hover:after:scale-x-100"
+                      }`}
+                      href={getLocalizedHref(locale, link.href)}
+                      key={link.key}
+                      onClick={() => setIsMenuOpen(false)}
+                      tabIndex={isMenuOpen ? undefined : -1}
+                    >
+                      {copy[link.key]}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <div
+                className={`mt-12 flex justify-end transition-[opacity,translate] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:translate-y-0 motion-reduce:transition-none ${
+                  isMenuOpen
+                    ? "translate-y-0 opacity-100 delay-[220ms] duration-[210ms]"
+                    : "delay-0 -translate-y-2 opacity-0 duration-[120ms]"
+                }`}
+              >
+                <LanguageSelector
+                  copy={copy}
+                  isInteractive={isMenuOpen}
+                  locale={locale}
+                  onNavigate={() => setIsMenuOpen(false)}
+                />
+              </div>
             </div>
           </div>
-        ) : null}
+        </div>
       </header>
     </>
   );

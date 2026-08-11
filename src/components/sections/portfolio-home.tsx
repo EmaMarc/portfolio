@@ -1529,7 +1529,7 @@ function HeroSection({ locale }: { locale: Locale }) {
         <p className="text-base font-medium text-zinc-300">
           {hero.role}
         </p>
-        <h1 className="mt-5 text-5xl font-semibold tracking-normal text-zinc-50 sm:text-6xl lg:text-7xl">
+        <h1 className="mt-5 font-brand text-5xl font-[380] tracking-normal text-zinc-50 sm:text-6xl lg:text-7xl">
           Ema Marc
         </h1>
         <p className="mt-7 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
