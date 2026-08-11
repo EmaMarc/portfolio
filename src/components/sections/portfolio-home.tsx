@@ -3,6 +3,7 @@ import { BackendEvidenceSurface } from "@/components/sections/backend-evidence-s
 import { BackendLiveApiSurface } from "@/components/sections/backend-live-api-surface";
 import { ProjectVideoPreview } from "@/components/sections/project-video-preview";
 import { PortraitContactMotion } from "@/components/sections/portrait-contact-motion";
+import { RevealObserver } from "@/components/sections/reveal-observer";
 import {
   experiences,
   profile,
@@ -767,6 +768,11 @@ function PrimaryProjectCard({
     return (
       <article
         className={`${surfaceClass} ${layoutClass} ${compactArticleClass}`}
+        data-reveal=""
+        data-reveal-delay={
+          project.id === "mythica-books" ? "short" : undefined
+        }
+        data-reveal-target={`project-${project.id}`}
       >
         {scanContent}
         <div className="lg:[grid-row:2]">{evidenceSurface}</div>
@@ -778,7 +784,11 @@ function PrimaryProjectCard({
   }
 
   return (
-    <article className={`${surfaceClass} ${layoutClass}`}>
+    <article
+      className={`${surfaceClass} ${layoutClass}`}
+      data-reveal=""
+      data-reveal-target={`project-${project.id}`}
+    >
       {scanContent}
       {evidenceAndLinks}
       {disclosure}
@@ -841,6 +851,8 @@ function ProjectSection({
         <h3
           id={`${section}-title`}
           className="text-3xl font-semibold tracking-normal text-zinc-50 sm:text-4xl"
+          data-reveal=""
+          data-reveal-target={`${section}-heading`}
         >
           {labels[section]}
         </h3>
@@ -875,6 +887,8 @@ function ProjectSection({
       <h3
         id={`${section}-title`}
         className="text-3xl font-semibold tracking-normal text-zinc-50 sm:text-4xl"
+        data-reveal=""
+        data-reveal-target={`${section}-heading`}
       >
         {labels[section]}
       </h3>
@@ -913,6 +927,8 @@ function WorkSection({ locale }: { locale: Locale }) {
         <h2
           id="work-title"
           className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+          data-reveal=""
+          data-reveal-target="work-heading"
         >
           {labels.work}
         </h2>
@@ -934,32 +950,40 @@ function WorkSection({ locale }: { locale: Locale }) {
           <h3
             id="other-work-title"
             className="text-3xl font-semibold tracking-normal text-zinc-50 sm:text-4xl"
+            data-reveal=""
+            data-reveal-target="other-work-heading"
           >
             {labels.otherWork}
           </h3>
-          <div className="grid gap-4 md:grid-cols-3">
-            {otherProjects.map((project) => (
-              <OtherProjectCard
-                key={project.id}
-                locale={locale}
-                project={project}
-              />
-            ))}
+          <div
+            className="space-y-5"
+            data-reveal=""
+            data-reveal-target="other-work-group"
+          >
+            <div className="grid gap-4 md:grid-cols-3">
+              {otherProjects.map((project) => (
+                <OtherProjectCard
+                  key={project.id}
+                  locale={locale}
+                  project={project}
+                />
+              ))}
+            </div>
+            {profile.links?.github ? (
+              <a
+                className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-white/25 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+                href={profile.links.github}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {labels.moreOnGithub}
+                <span aria-hidden="true" className="ml-1 text-zinc-500">
+                  ↗
+                </span>
+                <span className="sr-only">, {labels.externalSuffix}</span>
+              </a>
+            ) : null}
           </div>
-          {profile.links?.github ? (
-            <a
-              className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-white/25 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-              href={profile.links.github}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {labels.moreOnGithub}
-              <span aria-hidden="true" className="ml-1 text-zinc-500">
-                ↗
-              </span>
-              <span className="sr-only">, {labels.externalSuffix}</span>
-            </a>
-          ) : null}
         </section>
       </div>
     </section>
@@ -969,9 +993,11 @@ function WorkSection({ locale }: { locale: Locale }) {
 function ExperienceRecord({
   experience,
   locale,
+  revealDelay,
 }: {
   experience: Experience;
   locale: Locale;
+  revealDelay?: "short";
 }) {
   const labels = copy[locale];
   const visibleHighlights = experience.highlights.slice(
@@ -986,6 +1012,9 @@ function ExperienceRecord({
     <article
       aria-labelledby={`${experience.id}-title`}
       className="grid gap-6 border-b border-white/10 py-9 last:border-b-0 sm:py-11 lg:grid-cols-[7rem_minmax(0,1fr)_minmax(12rem,0.35fr)] lg:gap-10"
+      data-reveal=""
+      data-reveal-delay={revealDelay}
+      data-reveal-target={`experience-${experience.id}`}
     >
       <div className="space-y-2 lg:pt-1">
         <time
@@ -1076,6 +1105,8 @@ function ExperienceSection({ locale }: { locale: Locale }) {
       <div className="mb-10 max-w-3xl">
         <h2
           className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+          data-reveal=""
+          data-reveal-target="experience-heading"
           id="experience-title"
         >
           {labels.experience}
@@ -1088,6 +1119,9 @@ function ExperienceSection({ locale }: { locale: Locale }) {
             experience={experience}
             key={experience.id}
             locale={locale}
+            revealDelay={
+              experience.id === experiences[0]?.id ? "short" : undefined
+            }
           />
         ))}
       </div>
@@ -1111,6 +1145,10 @@ function PortraitPlate({
           <Image
             alt={labels.portraitAlt}
             className="object-cover object-[50%_50%]"
+            data-reveal=""
+            data-reveal-delay="short"
+            data-reveal-target="about-portrait-image"
+            data-reveal-variant="fade"
             fill
             loading="lazy"
             sizes="(max-width: 389px) calc((100vw - 2rem) * 0.92), (max-width: 639px) calc((100vw - 2rem) * 0.86), (max-width: 1023px) 23rem, (max-width: 1279px) 23.5rem, 25rem"
@@ -1141,13 +1179,19 @@ function AboutContactSection({ locale }: { locale: Locale }) {
           >
             <h2
               className="text-4xl font-semibold tracking-normal text-zinc-50 sm:text-5xl"
+              data-reveal=""
+              data-reveal-target="about-heading"
               id="about-title"
             >
               {labels.about}
             </h2>
           </div>
 
-          <div className="mt-12 min-w-0 lg:col-start-2 lg:row-start-2">
+          <div
+            className="mt-12 min-w-0 lg:col-start-2 lg:row-start-2"
+            data-reveal=""
+            data-reveal-target="about-story"
+          >
             <p className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-zinc-400">
               {profile.professionalTitle[locale]}
             </p>
@@ -1200,7 +1244,11 @@ function AboutContactSection({ locale }: { locale: Locale }) {
             />
           </PortraitContactMotion>
 
-          <div className="mt-14 min-w-0 space-y-8 lg:col-start-2 lg:row-start-3 lg:mt-12 lg:pt-2">
+          <div
+            className="mt-14 min-w-0 space-y-8 lg:col-start-2 lg:row-start-3 lg:mt-12 lg:pt-2"
+            data-reveal=""
+            data-reveal-target="about-profile-details"
+          >
             <section aria-labelledby="about-education-title">
               <h3
                 className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-400"
@@ -1348,7 +1396,11 @@ function ContactSection({ locale }: { locale: Locale }) {
       id="contact"
     >
       <div className="grid gap-14">
-        <div className="min-w-0">
+        <div
+          className="min-w-0"
+          data-reveal=""
+          data-reveal-target="contact-primary"
+        >
           <p className="font-mono text-xs font-medium uppercase tracking-[0.2em] text-zinc-400">
             {labels.contact}
           </p>
@@ -1466,7 +1518,11 @@ function HeroSection({ locale }: { locale: Locale }) {
 
   return (
     <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[24svh] xl:gap-20">
-      <div className="max-w-4xl lg:max-w-[35rem]">
+      <div
+        className="max-w-4xl lg:max-w-[35rem]"
+        data-reveal=""
+        data-reveal-target="hero-copy"
+      >
         <p className="text-base font-medium text-zinc-300">
           {hero.role}
         </p>
@@ -1509,12 +1565,17 @@ function HeroSection({ locale }: { locale: Locale }) {
 
 export function PortfolioHome({ locale }: PortfolioHomeProps) {
   return (
-    <main id="main-content" className="flex w-full flex-1 flex-col">
+    <main
+      id="main-content"
+      className="flex w-full flex-1 flex-col"
+      data-reveal-root=""
+    >
       <HeroSection locale={locale} />
       <WorkSection locale={locale} />
       <ExperienceSection locale={locale} />
       <AboutContactSection locale={locale} />
       <PortfolioFooter locale={locale} />
+      <RevealObserver />
     </main>
   );
 }
