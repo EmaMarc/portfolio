@@ -552,10 +552,12 @@ function EvidenceSurface({
 }
 
 function ProjectLinks({
+  className = "",
   hiddenLinkKeys,
   locale,
   project,
 }: {
+  className?: string;
   hiddenLinkKeys?: readonly LinkKey[];
   locale: Locale;
   project: Project;
@@ -567,7 +569,7 @@ function ProjectLinks({
   }
 
   return (
-    <ul className="flex flex-wrap gap-2">
+    <ul className={`flex flex-wrap gap-2 ${className}`}>
       {links.map((link) => (
         <li key={link.key}>
           <a
@@ -589,10 +591,12 @@ function ProjectLinks({
 }
 
 function ProjectMediaCaption({
+  className = "",
   cta,
   href,
   locale,
 }: {
+  className?: string;
   cta: NonNullable<NonNullable<Project["media"]>["contextualCta"]>;
   href: string;
   locale: Locale;
@@ -600,7 +604,7 @@ function ProjectMediaCaption({
   const labels = copy[locale];
 
   return (
-    <p className="text-xs leading-5">
+    <p className={`text-xs leading-5 ${className}`}>
       <span className="text-zinc-500">{cta.metadata[locale]}</span>{" "}
       <a
         className="inline-flex min-h-7 items-center border-b border-white/35 font-medium text-zinc-100 transition-colors hover:border-white/70 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
@@ -650,11 +654,15 @@ function PrimaryProjectCard({
       : isBackend
         ? "lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.78fr)]"
         : "";
-  const compactStableRegionClass =
-    "grid gap-6 lg:flex lg:min-h-[calc(40rem-9.3125rem)] lg:flex-col";
-  const lowerContentClass = isFrontendCompact ? "lg:mt-auto" : "";
+  const compactArticleClass = isFrontendCompact
+    ? "lg:row-span-5 lg:grid-rows-subgrid"
+    : "";
   const scanContent = (
-    <div className="flex min-w-0 flex-col gap-5">
+    <div
+      className={`flex min-w-0 flex-col gap-5 ${
+        isFrontendCompact ? "lg:[grid-row:1]" : ""
+      }`}
+    >
       <div className="space-y-3">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-zinc-500">
           {project.year}
@@ -678,35 +686,47 @@ function PrimaryProjectCard({
       <TechnologyList items={getScanTechnologies(project)} />
     </div>
   );
+  const evidenceSurface = (
+    <EvidenceSurface
+      isAnchor={anchor}
+      liveApiEvidence={project.liveApiEvidence}
+      liveBaseUrl={project.links?.live}
+      locale={locale}
+      media={project.media}
+      section={project.section}
+      technicalEvidence={project.technicalEvidence}
+    />
+  );
+  const mediaCaption = mediaCta ? (
+    <ProjectMediaCaption
+      className={isFrontendCompact ? "lg:[grid-row:3]" : ""}
+      cta={mediaCta}
+      href={mediaCta.href}
+      locale={locale}
+    />
+  ) : null;
+  const projectLinks = (
+    <ProjectLinks
+      className={isFrontendCompact ? "lg:[grid-row:4]" : ""}
+      hiddenLinkKeys={mediaCta ? [mediaCta.linkKey] : undefined}
+      locale={locale}
+      project={project}
+    />
+  );
   const evidenceAndLinks = (
-    <div className={`flex min-w-0 flex-col gap-4 ${lowerContentClass}`}>
+    <div className="flex min-w-0 flex-col gap-4">
       <div className="flex min-w-0 flex-col gap-2">
-        <EvidenceSurface
-          isAnchor={anchor}
-          liveApiEvidence={project.liveApiEvidence}
-          liveBaseUrl={project.links?.live}
-          locale={locale}
-          media={project.media}
-          section={project.section}
-          technicalEvidence={project.technicalEvidence}
-        />
-        {mediaCta ? (
-          <ProjectMediaCaption
-            cta={mediaCta}
-            href={mediaCta.href}
-            locale={locale}
-          />
-        ) : null}
+        {evidenceSurface}
+        {mediaCaption}
       </div>
-      <ProjectLinks
-        hiddenLinkKeys={mediaCta ? [mediaCta.linkKey] : undefined}
-        locale={locale}
-        project={project}
-      />
+      {projectLinks}
     </div>
   );
+  const disclosureClassName = `group border-t border-white/10 pt-4 lg:col-span-full ${
+    isFrontendCompact ? "lg:[grid-row:5]" : ""
+  }`;
   const disclosure = (
-    <details className="group border-t border-white/10 pt-4 lg:col-span-full">
+    <details className={disclosureClassName}>
       <summary className="flex min-h-11 cursor-pointer list-none items-center border border-white/[0.12] bg-white/[0.025] px-3 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-white/[0.22] hover:bg-white/[0.045] hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 group-open:border-white/[0.18] group-open:bg-white/[0.035] [&::-webkit-details-marker]:hidden">
         <span className="inline-flex items-center gap-2.5">
           <span className="group-open:hidden">{labels.depth}</span>
@@ -745,11 +765,13 @@ function PrimaryProjectCard({
 
   if (isFrontendCompact) {
     return (
-      <article className={`${surfaceClass} ${layoutClass}`}>
-        <div className={compactStableRegionClass}>
-          {scanContent}
-          {evidenceAndLinks}
-        </div>
+      <article
+        className={`${surfaceClass} ${layoutClass} ${compactArticleClass}`}
+      >
+        {scanContent}
+        <div className="lg:[grid-row:2]">{evidenceSurface}</div>
+        {mediaCaption}
+        {projectLinks}
         {disclosure}
       </article>
     );
