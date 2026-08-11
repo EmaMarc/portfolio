@@ -14,7 +14,7 @@ export function SmoothScroll() {
     const lenis = new Lenis({
       anchors: true,
       autoRaf: true,
-      lerp: 0.045,
+      lerp: 0.035,
       respectReducedMotion: true,
       smoothWheel: true,
       stopInertiaOnNavigate: true,
