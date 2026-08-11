@@ -19,6 +19,68 @@ export type VideoAsset = {
   height: number;
 };
 
+export type ProjectLinkKey =
+  | "repository"
+  | "frontendRepository"
+  | "backendRepository"
+  | "live"
+  | "demo"
+  | "linkedinPost"
+  | "certificate";
+
+export type LiveApiEvidence = {
+  label: LocalizedText;
+  defaultOperationId: string;
+  loadingLabel: LocalizedText;
+  errorLabel: LocalizedText;
+  emptyInputLabel: LocalizedText;
+  categoriesLabel: LocalizedText;
+  jsonSummaryLabel: LocalizedText;
+  liveResponseLabel: LocalizedText;
+  searchEmptyTitle: LocalizedText;
+  searchEmptyText: LocalizedText;
+  suggestionLabel: LocalizedText;
+  priceLabel: LocalizedText;
+  resultSingularLabel: LocalizedText;
+  resultPluralLabel: LocalizedText;
+  operations: readonly LiveApiOperation[];
+};
+
+export type LiveApiOperation = {
+  id: string;
+  number: string;
+  label: LocalizedText;
+  method: "GET";
+  path: string;
+  description: LocalizedText;
+  actionLabel?: LocalizedText;
+  idleState: {
+    text: LocalizedText;
+    title: LocalizedText;
+  };
+  input?: {
+    label: LocalizedText;
+    placeholder: LocalizedText;
+  };
+};
+
+export type TechnicalEvidenceStage = {
+  id: string;
+  number: string;
+  label: LocalizedText;
+  items: readonly LocalizedText[];
+  detailTitle: LocalizedText;
+  detailText: LocalizedText;
+};
+
+export type TechnicalEvidence = {
+  id: string;
+  label: LocalizedText;
+  ariaLabel: LocalizedText;
+  defaultStageId: string;
+  stages: readonly TechnicalEvidenceStage[];
+};
+
 export type Education = {
   id: string;
   institution: string;
@@ -82,6 +144,8 @@ export type Project = {
   summary?: LocalizedText;
   technologies: readonly string[];
   highlights: readonly LocalizedText[];
+  liveApiEvidence?: LiveApiEvidence;
+  technicalEvidence?: TechnicalEvidence;
   media?: {
     contextualCta?: {
       linkKey: "linkedinPost";
@@ -92,13 +156,6 @@ export type Project = {
     videoPreview?: VideoAsset;
     screenshots?: readonly ImageAsset[];
   };
-  links?: {
-    repository?: string;
-    frontendRepository?: string;
-    backendRepository?: string;
-    live?: string;
-    demo?: string;
-    linkedinPost?: string;
-    certificate?: string;
-  };
+  linkLabels?: Partial<Record<ProjectLinkKey, LocalizedText>>;
+  links?: Partial<Record<ProjectLinkKey, string>>;
 };

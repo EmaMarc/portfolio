@@ -1,7 +1,14 @@
 import Image from "next/image";
+import { BackendEvidenceSurface } from "@/components/sections/backend-evidence-surface";
+import { BackendLiveApiSurface } from "@/components/sections/backend-live-api-surface";
 import { ProjectVideoPreview } from "@/components/sections/project-video-preview";
 import { PortraitContactMotion } from "@/components/sections/portrait-contact-motion";
-import { experiences, profile, projects } from "@/content/portfolio";
+import {
+  experiences,
+  profile,
+  projects,
+  type ProjectLinkKey,
+} from "@/content/portfolio";
 import type { Education, Experience, Locale, Project } from "@/content/portfolio";
 
 const scanTechnologies: Record<string, readonly string[]> = {
@@ -293,7 +300,7 @@ const linkOrder = [
   "live",
   "linkedinPost",
   "certificate",
-] as const;
+] as const satisfies readonly ProjectLinkKey[];
 
 type LinkKey = (typeof linkOrder)[number];
 type PrimarySection = "frontend" | "backend";
@@ -348,7 +355,13 @@ function getPortraitLocation() {
   return city && country ? `${city} · ${country}` : profile.location;
 }
 
-function getLinkLabel(linkKey: LinkKey, locale: Locale) {
+function getLinkLabel(linkKey: LinkKey, locale: Locale, project: Project) {
+  const customLabel = project.linkLabels?.[linkKey]?.[locale];
+
+  if (customLabel) {
+    return customLabel;
+  }
+
   const labels = copy[locale];
 
   const linkLabels = {
@@ -441,11 +454,17 @@ function TechnologyList({
 function EvidenceSurface({
   isAnchor,
   section,
+  liveApiEvidence,
+  liveBaseUrl,
+  technicalEvidence,
   locale,
   media,
 }: {
   isAnchor: boolean;
   section: Project["section"];
+  liveApiEvidence?: Project["liveApiEvidence"];
+  liveBaseUrl?: string;
+  technicalEvidence?: Project["technicalEvidence"];
   locale: Locale;
   media?: Project["media"];
 }) {
@@ -460,6 +479,27 @@ function EvidenceSurface({
   const imageSizes = isLargeFrontendAnchor
     ? "(max-width: 1023px) calc(100vw - 2rem), 52vw"
     : "(max-width: 1023px) calc(100vw - 2rem), (max-width: 1279px) 44vw, 34rem";
+
+  if (liveApiEvidence && liveBaseUrl) {
+    return (
+      <BackendLiveApiSurface
+        className={sizeClass}
+        evidence={liveApiEvidence}
+        liveBaseUrl={liveBaseUrl}
+        locale={locale}
+      />
+    );
+  }
+
+  if (technicalEvidence) {
+    return (
+      <BackendEvidenceSurface
+        className={sizeClass}
+        evidence={technicalEvidence}
+        locale={locale}
+      />
+    );
+  }
 
   if (media?.poster && media.videoPreview) {
     return (
@@ -536,7 +576,7 @@ function ProjectLinks({
             rel="noopener noreferrer"
             target="_blank"
           >
-            <span>{getLinkLabel(link.key, locale)}</span>
+            <span>{getLinkLabel(link.key, locale, project)}</span>
             <span aria-hidden="true" className="ml-1 text-zinc-500">
               ↗
             </span>
@@ -643,9 +683,12 @@ function PrimaryProjectCard({
       <div className="flex min-w-0 flex-col gap-2">
         <EvidenceSurface
           isAnchor={anchor}
+          liveApiEvidence={project.liveApiEvidence}
+          liveBaseUrl={project.links?.live}
           locale={locale}
           media={project.media}
           section={project.section}
+          technicalEvidence={project.technicalEvidence}
         />
         {mediaCta ? (
           <ProjectMediaCaption

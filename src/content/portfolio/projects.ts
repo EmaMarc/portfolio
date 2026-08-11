@@ -214,6 +214,167 @@ export const projects: readonly Project[] = [
       repository: "https://github.com/EmaMarc/api-rest-TT",
       live: "https://api-rest-tt.vercel.app",
     },
+    linkLabels: {
+      repository: {
+        es: "Explorar el repositorio en GitHub",
+        en: "Explore the repository on GitHub",
+      },
+      live: {
+        es: "Abrir API desplegada",
+        en: "Open deployed API",
+      },
+    },
+    liveApiEvidence: {
+      label: {
+        es: "API en vivo",
+        en: "Live API",
+      },
+      defaultOperationId: "status",
+      loadingLabel: {
+        es: "Consultando…",
+        en: "Requesting…",
+      },
+      errorLabel: {
+        es: "La API no respondió en este momento.",
+        en: "The API did not respond right now.",
+      },
+      emptyInputLabel: {
+        es: "Escribí un nombre para buscar.",
+        en: "Enter a product name to search.",
+      },
+      categoriesLabel: {
+        es: "Categorías",
+        en: "Categories",
+      },
+      jsonSummaryLabel: {
+        es: "Ver respuesta JSON",
+        en: "View JSON response",
+      },
+      liveResponseLabel: {
+        es: "Respuesta real",
+        en: "Live response",
+      },
+      searchEmptyTitle: {
+        es: "Sin coincidencias",
+        en: "No matches",
+      },
+      searchEmptyText: {
+        es: "No encontramos productos para “{query}”. Probá con otro nombre.",
+        en: "We couldn't find products matching “{query}”. Try another name.",
+      },
+      suggestionLabel: {
+        es: "Probar",
+        en: "Try",
+      },
+      priceLabel: {
+        es: "Precio",
+        en: "Price",
+      },
+      resultSingularLabel: {
+        es: "resultado",
+        en: "result",
+      },
+      resultPluralLabel: {
+        es: "resultados",
+        en: "results",
+      },
+      operations: [
+        {
+          id: "status",
+          number: "01",
+          label: {
+            es: "Estado",
+            en: "Status",
+          },
+          method: "GET",
+          path: "/",
+          description: {
+            es: "Comprobá la disponibilidad de la API desplegada.",
+            en: "Check the availability of the deployed API.",
+          },
+          actionLabel: {
+            es: "Comprobar API",
+            en: "Check API",
+          },
+          idleState: {
+            title: {
+              es: "Sin consulta todavía",
+              en: "No request yet",
+            },
+            text: {
+              es: "Usá “Comprobar API” para verificar que el deployment está disponible y ver la respuesta real del servicio.",
+              en: "Use “Check API” to verify that the deployment is available and inspect the real service response.",
+            },
+          },
+        },
+        {
+          id: "list",
+          number: "02",
+          label: {
+            es: "Listado",
+            en: "List",
+          },
+          method: "GET",
+          path: "/products",
+          description: {
+            es: "Consultá el catálogo público almacenado en Firestore.",
+            en: "Query the public product catalog stored in Firestore.",
+          },
+          actionLabel: {
+            es: "Ejecutar request",
+            en: "Run request",
+          },
+          idleState: {
+            title: {
+              es: "Sin resultados todavía",
+              en: "No results yet",
+            },
+            text: {
+              es: "Ejecutá la consulta para cargar una muestra real del catálogo almacenado en Firestore.",
+              en: "Run the request to load a real sample of the catalog stored in Firestore.",
+            },
+          },
+        },
+        {
+          id: "search",
+          number: "03",
+          label: {
+            es: "Buscar",
+            en: "Search",
+          },
+          method: "GET",
+          path: "/products/search?name=",
+          description: {
+            es: "Buscá productos por nombre sobre la API desplegada.",
+            en: "Search deployed API products by name.",
+          },
+          actionLabel: {
+            es: "Buscar productos",
+            en: "Search products",
+          },
+          idleState: {
+            title: {
+              es: "Esperando una búsqueda",
+              en: "Waiting for a search",
+            },
+            text: {
+              es: "Ingresá un nombre de producto y ejecutá la búsqueda para consultar resultados reales de la API.",
+              en: "Enter a product name and run the search to query real API results.",
+            },
+          },
+          input: {
+            label: {
+              es: "Nombre del producto",
+              en: "Product name",
+            },
+            placeholder: {
+              es: "Ej. mouse",
+              en: "E.g. mouse",
+            },
+          },
+        },
+      ],
+    },
   },
   {
     id: "forohub",
@@ -252,9 +413,157 @@ export const projects: readonly Project[] = [
         en: "Managed persistence with Spring Data JPA and MySQL, versioned schema changes with Flyway, and documented the API using OpenAPI with Springdoc.",
       },
     ],
+    technicalEvidence: {
+      id: "forohub-system-trace",
+      label: {
+        es: "Arquitectura",
+        en: "Architecture",
+      },
+      ariaLabel: {
+        es: "Traza del sistema ForoHub: request, seguridad con Spring Security y filtro JWT, dominio del foro y persistencia con JPA, MySQL y Flyway.",
+        en: "ForoHub system trace: request, security with Spring Security and a JWT filter, forum domain, and persistence with JPA, MySQL, and Flyway.",
+      },
+      defaultStageId: "security",
+      stages: [
+        {
+          id: "request",
+          number: "01",
+          label: {
+            es: "Request",
+            en: "Request",
+          },
+          items: [
+            {
+              es: "/topicos",
+              en: "/topicos",
+            },
+            {
+              es: "/respuestas",
+              en: "/respuestas",
+            },
+            {
+              es: "/usuarios",
+              en: "/usuarios",
+            },
+            {
+              es: "/cursos",
+              en: "/cursos",
+            },
+          ],
+          detailTitle: {
+            es: "Entrada de la API",
+            en: "API entry",
+          },
+          detailText: {
+            es: "Los controllers exponen recursos para tópicos, respuestas, usuarios y cursos.",
+            en: "Controllers expose resources for topics, answers, users, and courses.",
+          },
+        },
+        {
+          id: "security",
+          number: "02",
+          label: {
+            es: "Security",
+            en: "Security",
+          },
+          items: [
+            {
+              es: "Spring Security",
+              en: "Spring Security",
+            },
+            {
+              es: "JWT Filter",
+              en: "JWT Filter",
+            },
+          ],
+          detailTitle: {
+            es: "Seguridad",
+            en: "Security",
+          },
+          detailText: {
+            es: "Spring Security protege los recursos y un filtro JWT valida el Bearer token antes de continuar la solicitud.",
+            en: "Spring Security protects resources while a JWT filter validates the Bearer token before the request continues.",
+          },
+        },
+        {
+          id: "domain",
+          number: "03",
+          label: {
+            es: "Dominio",
+            en: "Domain",
+          },
+          items: [
+            {
+              es: "Tópico",
+              en: "Topic",
+            },
+            {
+              es: "Respuesta",
+              en: "Answer",
+            },
+            {
+              es: "Usuario",
+              en: "User",
+            },
+            {
+              es: "Curso",
+              en: "Course",
+            },
+          ],
+          detailTitle: {
+            es: "Dominio",
+            en: "Domain",
+          },
+          detailText: {
+            es: "Tópicos, respuestas, usuarios y cursos modelan las relaciones y reglas principales del foro.",
+            en: "Topics, answers, users, and courses model the forum's core relationships and rules.",
+          },
+        },
+        {
+          id: "data",
+          number: "04",
+          label: {
+            es: "Data",
+            en: "Data",
+          },
+          items: [
+            {
+              es: "JPA",
+              en: "JPA",
+            },
+            {
+              es: "MySQL",
+              en: "MySQL",
+            },
+            {
+              es: "Flyway",
+              en: "Flyway",
+            },
+          ],
+          detailTitle: {
+            es: "Persistencia",
+            en: "Persistence",
+          },
+          detailText: {
+            es: "Spring Data JPA persiste el dominio en MySQL y Flyway mantiene las migraciones versionadas.",
+            en: "Spring Data JPA persists the domain in MySQL while Flyway keeps database migrations versioned.",
+          },
+        },
+      ],
+    },
     links: {
       repository: "https://github.com/EmaMarc/forohub",
       certificate: "https://lnkd.in/p/dztk8nU6",
+    },
+    linkLabels: {
+      repository: {
+        es: "Explorar el repositorio en GitHub",
+        en: "Explore the repository on GitHub",
+      },
+      certificate: {
+        es: "Ver certificado",
+        en: "View certificate",
+      },
     },
   },
   {
