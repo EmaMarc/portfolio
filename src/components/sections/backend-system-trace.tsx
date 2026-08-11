@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 
 export type SystemTraceStage = {
   id: string;
@@ -33,6 +33,9 @@ export function BackendSystemTrace({
   const [activeStageId, setActiveStageId] = useState(initialStageId);
   const activeStage =
     stages.find((stage) => stage.id === activeStageId) ?? stages[0];
+  const stageGridStyle = {
+    "--trace-stage-count": stages.length,
+  } as CSSProperties;
 
   if (!activeStage) {
     return null;
@@ -50,7 +53,10 @@ export function BackendSystemTrace({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))]">
+      <div
+        className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-[repeat(var(--trace-stage-count),minmax(0,1fr))]"
+        style={stageGridStyle}
+      >
         {stages.map((stage) => {
           const isActive = stage.id === activeStage.id;
 

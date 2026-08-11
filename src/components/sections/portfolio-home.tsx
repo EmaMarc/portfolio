@@ -158,7 +158,7 @@ const aboutStoryCopy = {
     outside:
       "Fuera del código, disfruto especialmente los libros, las series y las historias de fantasía capaces de transportarme a otros mundos y épocas.",
     outsideLabel: "FUERA DEL CÓDIGO",
-    outsideShort: "Lord of Mysteries · Leyendo ahora: Nacidos de la Bruma",
+    outsideShort: "Favorito: Lord of Mysteries · Leyendo ahora: Nacidos de la Bruma",
     work:
       "Cuando un problema se complica, suelo alejarme un momento y volver con otra perspectiva antes de insistir sobre la misma solución. En equipo me siento cómodo aportando sin necesidad de ocupar el centro, aunque tampoco tengo problema en asumir responsabilidades o liderar cuando el proyecto lo necesita.",
     workLabel: "CÓMO TRABAJO",
