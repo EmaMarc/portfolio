@@ -50,7 +50,7 @@ export function BackendSystemTrace({
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2 xl:grid-cols-[repeat(auto-fit,minmax(7rem,1fr))]">
         {stages.map((stage) => {
           const isActive = stage.id === activeStage.id;
 

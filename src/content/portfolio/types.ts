@@ -66,7 +66,7 @@ export type LiveApiOperation = {
 
 export type TechnicalEvidenceStage = {
   id: string;
-  number: string;
+  number?: string;
   label: LocalizedText;
   items: readonly LocalizedText[];
   detailTitle: LocalizedText;

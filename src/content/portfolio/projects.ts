@@ -594,8 +594,115 @@ export const projects: readonly Project[] = [
         en: "Configured persistence with MySQL 8 and prepared queries through PDO, and organized the environment with Docker Compose and Composer to run the application and its supporting services.",
       },
     ],
+    technicalEvidence: {
+      id: "php-api-rest-system-trace",
+      label: {
+        es: "Arquitectura",
+        en: "Architecture",
+      },
+      ariaLabel: {
+        es: "Arquitectura de PHP API REST: autenticación Bearer con AuthMiddleware, reglas de reservas y runtime con Slim, PDO, MySQL y Docker Compose.",
+        en: "PHP API REST architecture: Bearer authentication with AuthMiddleware, booking rules, and runtime with Slim, PDO, MySQL, and Docker Compose.",
+      },
+      defaultStageId: "bookings",
+      stages: [
+        {
+          id: "authentication",
+          label: {
+            es: "Autenticación",
+            en: "Authentication",
+          },
+          items: [
+            {
+              es: "Bearer token",
+              en: "Bearer token",
+            },
+            {
+              es: "AuthMiddleware",
+              en: "AuthMiddleware",
+            },
+            {
+              es: "Admin / Owner",
+              en: "Admin / Owner",
+            },
+          ],
+          detailTitle: {
+            es: "Autenticación",
+            en: "Authentication",
+          },
+          detailText: {
+            es: "Un token Bearer almacenado en base de datos pasa por AuthMiddleware para validar la sesión y aplicar permisos de administrador o propietario.",
+            en: "A database-backed Bearer token passes through AuthMiddleware to validate the session and apply administrator or owner permissions.",
+          },
+        },
+        {
+          id: "bookings",
+          label: {
+            es: "Reservas",
+            en: "Bookings",
+          },
+          items: [
+            {
+              es: "Booking",
+              en: "Booking",
+            },
+            {
+              es: "Participantes",
+              en: "Participants",
+            },
+            {
+              es: "Disponibilidad",
+              en: "Availability",
+            },
+          ],
+          detailTitle: {
+            es: "Reglas de reserva",
+            en: "Booking rules",
+          },
+          detailText: {
+            es: "El flujo valida disponibilidad de cancha, horarios, participantes y conflictos antes de registrar una reserva.",
+            en: "The flow validates court availability, schedules, participants, and conflicts before creating a booking.",
+          },
+        },
+        {
+          id: "runtime",
+          label: {
+            es: "Runtime",
+            en: "Runtime",
+          },
+          items: [
+            {
+              es: "Slim 4",
+              en: "Slim 4",
+            },
+            {
+              es: "PDO / MySQL",
+              en: "PDO / MySQL",
+            },
+            {
+              es: "Docker Compose",
+              en: "Docker Compose",
+            },
+          ],
+          detailTitle: {
+            es: "Runtime",
+            en: "Runtime",
+          },
+          detailText: {
+            es: "Slim organiza las rutas y módulos de la API, PDO conecta la aplicación con MySQL y Docker Compose reproduce el entorno de servicios.",
+            en: "Slim organizes the API routes and modules, PDO connects the application to MySQL, and Docker Compose reproduces the service environment.",
+          },
+        },
+      ],
+    },
     links: {
       repository: "https://github.com/EmaMarc/PHP-API-Rest",
+    },
+    linkLabels: {
+      repository: {
+        es: "Explorar el repositorio en GitHub",
+        en: "Explore the repository on GitHub",
+      },
     },
   },
   {
