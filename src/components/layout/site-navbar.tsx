@@ -13,6 +13,13 @@ const sectionLinks = [
   { href: "#contact", key: "contact" },
 ] as const;
 
+type SectionId = (typeof sectionLinks)[number]["key"];
+
+const activeSectionActivationRatio = 0.44;
+const activeSectionRootMargin = "-43% 0px -56% 0px";
+const currentSectionLinkClass =
+  "text-white [text-shadow:0_0_8px_rgba(220,38,38,0.45)] after:scale-x-100 after:bg-[rgba(220,38,38,0.96)] hover:text-white hover:after:bg-[rgba(220,38,38,0.96)]";
+
 const navCopy = {
   es: {
     about: "Sobre mí",
@@ -70,7 +77,7 @@ function LogoSlot() {
   return (
     <span
       aria-hidden="true"
-      className="grid size-7 place-items-center border border-white/15 text-[0.62rem] font-semibold tracking-[0.08em] text-zinc-400"
+      className="grid size-7 shrink-0 place-items-center text-[0.58rem] font-semibold tracking-[0.12em] text-zinc-500"
     >
       EM
     </span>
@@ -145,6 +152,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
   const topSentinelRef = useRef<HTMLDivElement>(null);
   const [hasMeasured, setHasMeasured] = useState(false);
   const [canAnimate, setCanAnimate] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId | null>(null);
   const [isAtTop, setIsAtTop] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const copy = navCopy[locale];
@@ -246,6 +254,63 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
   }, []);
 
   useEffect(() => {
+    if (!("IntersectionObserver" in window)) {
+      return undefined;
+    }
+
+    const sectionTargets = sectionLinks.flatMap((link) => {
+      const element = document.getElementById(link.key);
+
+      return element ? [{ element, key: link.key }] : [];
+    });
+
+    if (sectionTargets.length === 0) {
+      return undefined;
+    }
+
+    const getCurrentSection = () => {
+      const activationY = window.innerHeight * activeSectionActivationRatio;
+      let currentSection: SectionId | null = null;
+
+      for (const { element, key } of sectionTargets) {
+        const rect = element.getBoundingClientRect();
+
+        if (rect.top > activationY) {
+          break;
+        }
+
+        currentSection = key;
+      }
+
+      return currentSection;
+    };
+
+    const syncActiveSection = () => {
+      setActiveSection(getCurrentSection());
+    };
+
+    const observer = new IntersectionObserver(
+      () => {
+        syncActiveSection();
+      },
+      {
+        rootMargin: activeSectionRootMargin,
+        threshold: 0,
+      },
+    );
+
+    sectionTargets.forEach(({ element }) => {
+      observer.observe(element);
+    });
+    const syncTimeout = window.setTimeout(syncActiveSection, 0);
+
+    return () => {
+      window.clearTimeout(syncTimeout);
+      observer.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     if (!isMenuOpen) {
       return undefined;
     }
@@ -288,12 +353,12 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
             }}
           >
             <Link
-              className={`inline-flex min-h-14 shrink-0 items-center gap-3 whitespace-nowrap border px-4 text-base font-semibold tracking-normal shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100 ${surfaceTransitionClass} ${
+              className={`inline-flex min-h-14 shrink-0 items-center gap-3 whitespace-nowrap border-b bg-transparent text-sm font-semibold tracking-[0.08em] text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100 ${surfaceTransitionClass} ${
                 isAtTop
-                  ? "rounded-l-full border-r-0 border-white/10 bg-black/45"
-                  : "rounded-full border-white/[0.12] bg-black/[0.58]"
+                  ? "border-white/[0.1] px-1 pr-10"
+                  : "border-white/[0.14] px-1 pr-8"
               }`}
-              href={`/${locale}`}
+              href={getLocalizedHref(locale, "#top")}
             >
               <LogoSlot />
               Ema Marc
@@ -312,28 +377,39 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
             }}
           >
             <div
-              className={`flex min-h-14 shrink-0 items-center justify-end gap-4 whitespace-nowrap border px-4 shadow-[0_18px_60px_rgba(0,0,0,0.18)] backdrop-blur-sm lg:px-5 ${surfaceTransitionClass} ${
+              className={`flex min-h-14 shrink-0 items-center justify-end whitespace-nowrap border-b bg-transparent ${surfaceTransitionClass} ${
                 isAtTop
-                  ? "rounded-r-full border-l-0 border-white/10 bg-black/45"
-                  : "rounded-full border-white/[0.12] bg-black/[0.58]"
+                  ? "gap-6 border-white/[0.1] py-0 pl-10 pr-1"
+                  : "gap-4 border-white/[0.14] py-0 pl-8 pr-1"
               }`}
             >
               <nav
                 aria-label={copy.navigation}
-                className="flex shrink-0 flex-nowrap items-center gap-1 whitespace-nowrap"
+                className="flex shrink-0 flex-nowrap items-center gap-2 whitespace-nowrap"
               >
-                {sectionLinks.map((link) => (
-                  <Link
-                    className="shrink-0 whitespace-nowrap px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
-                    href={getLocalizedHref(locale, link.href)}
-                    key={link.key}
-                  >
-                    {copy[link.key]}
-                  </Link>
-                ))}
+                {sectionLinks.map((link) => {
+                  const isCurrent = activeSection === link.key;
+
+                  return (
+                    <Link
+                      aria-current={isCurrent ? "location" : undefined}
+                      className={`relative inline-flex shrink-0 items-center whitespace-nowrap px-2 py-2 text-[0.8125rem] font-medium tracking-[0.02em] transition-colors duration-150 after:pointer-events-none after:absolute after:inset-x-2 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:transition-transform after:duration-200 after:ease-out after:content-[''] motion-reduce:after:transition-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 ${
+                        isCurrent
+                          ? currentSectionLinkClass
+                          : "text-zinc-400 after:bg-white/[0.26] hover:text-zinc-50 hover:after:scale-x-100"
+                      }`}
+                      href={getLocalizedHref(locale, link.href)}
+                      key={link.key}
+                    >
+                      {copy[link.key]}
+                    </Link>
+                  );
+                })}
               </nav>
 
-              <LanguageSelector copy={copy} locale={locale} />
+              <div className={isAtTop ? "pl-4" : "pl-3"}>
+                <LanguageSelector copy={copy} locale={locale} />
+              </div>
             </div>
           </div>
         </div>
@@ -341,7 +417,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
         <div className="mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-3 rounded-full border border-white/10 bg-black/55 px-3 text-zinc-100 shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md sm:px-4 md:hidden">
           <Link
             className="inline-flex min-h-11 items-center rounded-full px-2 text-base font-semibold tracking-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-            href={`/${locale}`}
+            href={getLocalizedHref(locale, "#top")}
           >
             Ema Marc
           </Link>
@@ -363,16 +439,21 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
             id="mobile-menu"
           >
             <nav aria-label={copy.navigation} className="flex flex-col gap-1">
-              {sectionLinks.map((link) => (
-                <Link
-                  className="rounded-2xl px-4 py-3 text-base font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
-                  href={getLocalizedHref(locale, link.href)}
-                  key={link.key}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {copy[link.key]}
-                </Link>
-              ))}
+              {sectionLinks.map((link) => {
+                const isCurrent = activeSection === link.key;
+
+                return (
+                  <Link
+                    aria-current={isCurrent ? "location" : undefined}
+                    className="rounded-2xl px-4 py-3 text-base font-medium text-zinc-200 transition-colors hover:bg-white/10 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+                    href={getLocalizedHref(locale, link.href)}
+                    key={link.key}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {copy[link.key]}
+                  </Link>
+                );
+              })}
             </nav>
             <div className="mt-3 border-t border-white/10 pt-3">
               <LanguageSelector

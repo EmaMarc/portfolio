@@ -173,7 +173,7 @@ const aboutStoryCopy = {
     outside:
       "Outside of code, I especially enjoy books, series, and fantasy stories that can transport me to other worlds and eras.",
     outsideLabel: "OUTSIDE OF CODE",
-    outsideShort: "Lord of Mysteries · Currently reading: Mistborn",
+    outsideShort: "Favorite: Lord of Mysteries · Currently reading: Mistborn",
     work:
       "When a problem gets difficult, I usually step away for a moment and come back with a different perspective instead of forcing the same approach. In a team, I'm comfortable contributing without needing to be at the center, but I'm also willing to take responsibility or lead when the project calls for it.",
     workLabel: "HOW I WORK",
@@ -1517,7 +1517,10 @@ function HeroSection({ locale }: { locale: Locale }) {
   const hero = heroCopy[locale];
 
   return (
-    <section className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[24svh] xl:gap-20">
+    <section
+      className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[24svh] xl:gap-20"
+      id="top"
+    >
       <div
         className="max-w-4xl lg:max-w-[35rem]"
         data-reveal=""
