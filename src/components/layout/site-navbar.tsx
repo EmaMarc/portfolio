@@ -32,6 +32,9 @@ const menuItemOpenDelayClasses = [
   "delay-[140ms]",
   "delay-[175ms]",
 ] as const;
+const desktopMenuMediaQuery = "(min-width: 48rem)";
+const mainContentId = "main-content";
+const mobileMenuFocusableSelector = "a[href], button:not(:disabled)";
 
 const navCopy = {
   es: {
@@ -167,6 +170,8 @@ function LanguageSelector({
 export function SiteNavbar({ locale }: SiteNavbarProps) {
   const desktopNavRef = useRef<HTMLDivElement>(null);
   const brandGroupRef = useRef<HTMLDivElement>(null);
+  const mobileMenuPanelRef = useRef<HTMLDivElement>(null);
+  const mobileMenuTriggerRef = useRef<HTMLButtonElement>(null);
   const navigationGroupRef = useRef<HTMLDivElement>(null);
   const topSentinelRef = useRef<HTMLDivElement>(null);
   const [hasMeasured, setHasMeasured] = useState(false);
@@ -191,6 +196,23 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
   const navigationPositionClass = isInitialTopGeometry
     ? "relative"
     : "absolute right-0 top-0";
+
+  const focusMobileMenuTrigger = () => {
+    mobileMenuTriggerRef.current?.focus({ preventScroll: true });
+  };
+
+  const closeMobileMenu = () => {
+    setIsMenuOpen(false);
+    focusMobileMenuTrigger();
+  };
+
+  const handleMobileMenuToggle = () => {
+    if (isMenuOpen) {
+      focusMobileMenuTrigger();
+    }
+
+    setIsMenuOpen((current) => !current);
+  };
 
   useLayoutEffect(() => {
     const desktopNav = desktopNavRef.current;
@@ -334,10 +356,51 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
       return undefined;
     }
 
+    const getMobileMenuFocusTargets = () => {
+      const trigger = mobileMenuTriggerRef.current;
+      const panel = mobileMenuPanelRef.current;
+      const panelControls = panel
+        ? Array.from(
+            panel.querySelectorAll<HTMLElement>(mobileMenuFocusableSelector),
+          ).filter((element) => element.tabIndex >= 0)
+        : [];
+
+      return trigger ? [trigger, ...panelControls] : panelControls;
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         setIsMenuOpen(false);
+        mobileMenuTriggerRef.current?.focus({ preventScroll: true });
+        return;
       }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusTargets = getMobileMenuFocusTargets();
+
+      if (focusTargets.length === 0) {
+        return;
+      }
+
+      const activeTarget = document.activeElement;
+      const activeIndex =
+        activeTarget instanceof HTMLElement
+          ? focusTargets.indexOf(activeTarget)
+          : -1;
+      const nextIndex = event.shiftKey
+        ? activeIndex <= 0
+          ? focusTargets.length - 1
+          : activeIndex - 1
+        : activeIndex === -1 || activeIndex === focusTargets.length - 1
+          ? 0
+          : activeIndex + 1;
+
+      event.preventDefault();
+      focusTargets[nextIndex]?.focus({ preventScroll: true });
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -346,6 +409,47 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isMenuOpen]);
+
+  useLayoutEffect(() => {
+    if (!isMenuOpen) {
+      return undefined;
+    }
+
+    const mainContent = document.getElementById(mainContentId);
+
+    mainContent?.setAttribute("inert", "");
+    focusMobileMenuTrigger();
+
+    return () => {
+      mainContent?.removeAttribute("inert");
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    const desktopQuery = window.matchMedia(desktopMenuMediaQuery);
+
+    const closeMenuOnDesktop = () => {
+      if (desktopQuery.matches) {
+        setIsMenuOpen(false);
+
+        if (
+          mobileMenuTriggerRef.current === document.activeElement ||
+          mobileMenuPanelRef.current?.contains(document.activeElement)
+        ) {
+          desktopNavRef.current
+            ?.querySelector<HTMLElement>(mobileMenuFocusableSelector)
+            ?.focus({ preventScroll: true });
+        }
+      }
+    };
+
+    closeMenuOnDesktop();
+    desktopQuery.addEventListener("change", closeMenuOnDesktop);
+
+    return () => {
+      desktopQuery.removeEventListener("change", closeMenuOnDesktop);
+    };
+  }, []);
 
   return (
     <>
@@ -464,7 +568,8 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
                   ? "text-zinc-50"
                   : "text-zinc-300 hover:text-zinc-50 focus-visible:text-zinc-50"
               }`}
-              onClick={() => setIsMenuOpen((current) => !current)}
+              onClick={handleMobileMenuToggle}
+              ref={mobileMenuTriggerRef}
               type="button"
             >
               <span
@@ -494,6 +599,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
                 : "invisible pointer-events-none -translate-y-1 opacity-0 duration-[220ms] [clip-path:inset(0_0_100%_0)]"
             }`}
             id="mobile-menu"
+            ref={mobileMenuPanelRef}
           >
             <div className="mx-auto w-full max-w-6xl px-5 pb-12 pt-9 sm:px-8">
               <nav
@@ -517,7 +623,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
                       }`}
                       href={getLocalizedHref(locale, link.href)}
                       key={link.key}
-                      onClick={() => setIsMenuOpen(false)}
+                      onClick={closeMobileMenu}
                       tabIndex={isMenuOpen ? undefined : -1}
                     >
                       {copy[link.key]}
@@ -536,7 +642,7 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
                   copy={copy}
                   isInteractive={isMenuOpen}
                   locale={locale}
-                  onNavigate={() => setIsMenuOpen(false)}
+                  onNavigate={closeMobileMenu}
                 />
               </div>
             </div>

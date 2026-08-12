@@ -743,7 +743,7 @@ export const projects: readonly Project[] = [
     highlights: [],
     links: {
       repository: "https://github.com/EmaMarc/CaC_Nutriguia.github.io",
-      live: "https://emmaakai.github.io/CaC_Nutriguia.github.io/",
+      live: "https://emamarc.github.io/CaC_Nutriguia.github.io/",
     },
   },
   {

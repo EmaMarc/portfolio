@@ -1,5 +1,7 @@
 export { experiences } from "./experience";
+export { ogLocales } from "./seo";
 export { profile } from "./profile";
+export { portfolioSeo } from "./seo";
 export { projects } from "./projects";
 export type {
   Certification,

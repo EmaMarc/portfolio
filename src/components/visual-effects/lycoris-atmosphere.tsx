@@ -775,6 +775,7 @@ export function LycorisAtmosphere() {
             className={styles.image}
             draggable={false}
             fill
+            fetchPriority="high"
             loading="eager"
             sizes="(max-width: 639px) 168vw, (max-width: 1023px) 46rem, (max-width: 1279px) 44rem, (max-width: 1535px) 54vw, 66rem"
             src={LYCORIS_SRC}

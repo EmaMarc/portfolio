@@ -1545,7 +1545,7 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
             Ema Marc
           </p>
           {portraitLocation ? (
-            <p className="mt-1 font-mono text-xs tracking-[0.06em] text-zinc-500">
+            <p className="mt-1 font-mono text-xs tracking-[0.06em] text-zinc-400">
               {portraitLocation}
             </p>
           ) : null}
@@ -1560,14 +1560,16 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
         </a>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs tracking-[0.06em] text-zinc-500 sm:justify-end">
-          <span>
+          <span className="text-zinc-400">
             <span className="sr-only">{labels.currentLanguage}: </span>
             {locale.toUpperCase()}
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="sr-only">Copyright </span>
             <CopyrightIcon className="size-3.5 shrink-0" />
-            <span>{copyrightYear} Emanuel Marcello</span>
+            <span className="text-zinc-400">
+              {copyrightYear} Emanuel Marcello
+            </span>
           </span>
         </div>
       </div>
