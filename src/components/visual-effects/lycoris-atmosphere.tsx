@@ -5,8 +5,11 @@ import { useEffect, useRef } from "react";
 import styles from "./lycoris-atmosphere.module.css";
 
 const DESKTOP_QUERY = "(min-width: 1024px)";
+const PARALLAX_POINTER_QUERY = "(pointer: fine) and (hover: hover)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const DAMPING = 0.095;
+const PARALLAX_MAX_X = 10;
+const PARALLAX_MAX_Y = 6;
 const SETTLE_DELTA = 0.45;
 const LYCORIS_SRC = "/media/hero/lycoris-hero.png";
 
@@ -275,6 +278,7 @@ function clearInlineStyles(imageFrame: HTMLDivElement, glow: HTMLDivElement) {
 
 export function LycorisAtmosphere() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const parallaxLayerRef = useRef<HTMLDivElement>(null);
   const imageFrameRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const geometryRef = useRef<Geometry | null>(null);
@@ -284,22 +288,35 @@ export function LycorisAtmosphere() {
 
   useEffect(() => {
     const root = rootRef.current;
+    const parallaxLayer = parallaxLayerRef.current;
     const imageFrame = imageFrameRef.current;
     const glow = glowRef.current;
 
-    if (!root || !imageFrame || !glow) {
+    if (!root || !parallaxLayer || !imageFrame || !glow) {
+      return undefined;
+    }
+
+    if (!("matchMedia" in window)) {
       return undefined;
     }
 
     const desktopQuery = window.matchMedia(DESKTOP_QUERY);
+    const pointerQuery = window.matchMedia(PARALLAX_POINTER_QUERY);
     const reducedMotionQuery = window.matchMedia(REDUCED_MOTION_QUERY);
     let isActive = false;
+    let isParallaxChapterActive = false;
     let isListeningToScroll = false;
     let isListeningToResize = false;
     let isListeningToVisibility = false;
+    let isListeningToParallaxPointer = false;
     let hasMeasuredActiveMode = false;
     let resizeObserver: ResizeObserver | null = null;
     let mobileHeroObserver: IntersectionObserver | null = null;
+    let parallaxBoundaryObserver: IntersectionObserver | null = null;
+    let parallaxFrame: number | null = null;
+    let parallaxViewportWidth = Math.max(1, window.innerWidth);
+    let parallaxViewportHeight = Math.max(1, window.innerHeight);
+    let parallaxTarget = { x: 0, y: 0 };
 
     const setMobileState = (state: MobileState) => {
       root.dataset.mobileState = state;
@@ -308,6 +325,198 @@ export function LycorisAtmosphere() {
     const disconnectMobileHeroObserver = () => {
       mobileHeroObserver?.disconnect();
       mobileHeroObserver = null;
+    };
+
+    const disconnectParallaxBoundaryObserver = () => {
+      parallaxBoundaryObserver?.disconnect();
+      parallaxBoundaryObserver = null;
+      isParallaxChapterActive = false;
+    };
+
+    const writeParallax = (x: number, y: number) => {
+      parallaxLayer.style.setProperty(
+        "--lycoris-parallax-x",
+        `${x.toFixed(2)}px`,
+      );
+      parallaxLayer.style.setProperty(
+        "--lycoris-parallax-y",
+        `${y.toFixed(2)}px`,
+      );
+    };
+
+    const stopParallaxFrame = () => {
+      if (parallaxFrame !== null) {
+        window.cancelAnimationFrame(parallaxFrame);
+        parallaxFrame = null;
+      }
+    };
+
+    const scheduleParallaxFrame = () => {
+      if (document.hidden) {
+        writeParallax(parallaxTarget.x, parallaxTarget.y);
+        return;
+      }
+
+      if (parallaxFrame !== null) {
+        return;
+      }
+
+      parallaxFrame = window.requestAnimationFrame(() => {
+        parallaxFrame = null;
+        writeParallax(parallaxTarget.x, parallaxTarget.y);
+      });
+    };
+
+    const resetParallax = (sync: boolean) => {
+      parallaxTarget = { x: 0, y: 0 };
+
+      if (sync) {
+        stopParallaxFrame();
+        writeParallax(0, 0);
+        return;
+      }
+
+      scheduleParallaxFrame();
+    };
+
+    const readParallaxViewport = () => {
+      parallaxViewportWidth = Math.max(1, window.innerWidth);
+      parallaxViewportHeight = Math.max(1, window.innerHeight);
+    };
+
+    const handleParallaxPointerMove = (event: PointerEvent) => {
+      const normalizedX = clamp(
+        (event.clientX / parallaxViewportWidth) * 2 - 1,
+        -1,
+        1,
+      );
+      const normalizedY = clamp(
+        (event.clientY / parallaxViewportHeight) * 2 - 1,
+        -1,
+        1,
+      );
+
+      parallaxTarget = {
+        x: normalizedX * -PARALLAX_MAX_X,
+        y: normalizedY * -PARALLAX_MAX_Y,
+      };
+      scheduleParallaxFrame();
+    };
+
+    const handleParallaxWindowExit = () => {
+      resetParallax(false);
+    };
+
+    const handleParallaxPointerOut = (event: PointerEvent) => {
+      if (event.relatedTarget === null) {
+        resetParallax(false);
+      }
+    };
+
+    const removeParallaxPointerListeners = () => {
+      if (!isListeningToParallaxPointer) {
+        return;
+      }
+
+      window.removeEventListener("pointermove", handleParallaxPointerMove);
+      window.removeEventListener("blur", handleParallaxWindowExit);
+      document.removeEventListener("pointerout", handleParallaxPointerOut);
+      isListeningToParallaxPointer = false;
+    };
+
+    const addParallaxPointerListeners = () => {
+      if (isListeningToParallaxPointer) {
+        return;
+      }
+
+      readParallaxViewport();
+      window.addEventListener(
+        "pointermove",
+        handleParallaxPointerMove,
+        { passive: true },
+      );
+      window.addEventListener("blur", handleParallaxWindowExit);
+      document.addEventListener("pointerout", handleParallaxPointerOut);
+      isListeningToParallaxPointer = true;
+    };
+
+    const syncParallaxPointerListeners = () => {
+      if (isParallaxChapterActive) {
+        addParallaxPointerListeners();
+        return;
+      }
+
+      removeParallaxPointerListeners();
+      resetParallax(true);
+    };
+
+    const syncParallaxBoundary = (
+      workTop: number,
+      isWorkIntersecting: boolean,
+    ) => {
+      isParallaxChapterActive = !isWorkIntersecting && workTop > 0;
+      syncParallaxPointerListeners();
+    };
+
+    const syncParallaxBoundaryFromElement = (work: HTMLElement) => {
+      const workRect = work.getBoundingClientRect();
+      const isWorkIntersecting =
+        workRect.top < window.innerHeight && workRect.bottom > 0;
+
+      readParallaxViewport();
+      syncParallaxBoundary(workRect.top, isWorkIntersecting);
+    };
+
+    const observeParallaxBoundary = () => {
+      disconnectParallaxBoundaryObserver();
+
+      if (!("IntersectionObserver" in window)) {
+        removeParallaxPointerListeners();
+        resetParallax(true);
+        return;
+      }
+
+      const work = document.getElementById("work");
+
+      if (!work) {
+        removeParallaxPointerListeners();
+        resetParallax(true);
+        return;
+      }
+
+      parallaxBoundaryObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry) {
+            readParallaxViewport();
+            syncParallaxBoundary(
+              entry.boundingClientRect.top,
+              entry.isIntersecting,
+            );
+          }
+        },
+        {
+          threshold: [0],
+        },
+      );
+      parallaxBoundaryObserver.observe(work);
+      syncParallaxBoundaryFromElement(work);
+    };
+
+    const syncParallaxMode = () => {
+      const shouldUseParallax =
+        isActive &&
+        desktopQuery.matches &&
+        pointerQuery.matches &&
+        !reducedMotionQuery.matches;
+
+      if (!shouldUseParallax) {
+        disconnectParallaxBoundaryObserver();
+        removeParallaxPointerListeners();
+        resetParallax(true);
+        return;
+      }
+
+      observeParallaxBoundary();
     };
 
     const getHeroMobileState = (hero: Element): MobileState => {
@@ -452,16 +661,20 @@ export function LycorisAtmosphere() {
 
     const handleResize = () => {
       measure(true);
+      readParallaxViewport();
+      resetParallax(false);
     };
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
         stopFrame();
+        resetParallax(false);
         return;
       }
 
       if (isActive) {
         measure(false);
+        syncParallaxMode();
       }
     };
 
@@ -513,6 +726,7 @@ export function LycorisAtmosphere() {
         resizeObserver?.disconnect();
         resizeObserver = null;
         removeActiveListeners();
+        syncParallaxMode();
         observeMobileHero();
         clearInlineStyles(imageFrame, glow);
         return;
@@ -524,18 +738,24 @@ export function LycorisAtmosphere() {
       addActiveListeners();
       observeGeometry();
       measure(!hasMeasuredActiveMode);
+      syncParallaxMode();
     };
 
     syncMode();
     desktopQuery.addEventListener("change", syncMode);
+    pointerQuery.addEventListener("change", syncParallaxMode);
     reducedMotionQuery.addEventListener("change", syncMode);
 
     return () => {
       stopFrame();
+      stopParallaxFrame();
       disconnectMobileHeroObserver();
+      disconnectParallaxBoundaryObserver();
       resizeObserver?.disconnect();
+      removeParallaxPointerListeners();
       removeActiveListeners();
       desktopQuery.removeEventListener("change", syncMode);
+      pointerQuery.removeEventListener("change", syncParallaxMode);
       reducedMotionQuery.removeEventListener("change", syncMode);
     };
   }, []);
@@ -547,17 +767,19 @@ export function LycorisAtmosphere() {
       data-mobile-state="hero"
       ref={rootRef}
     >
-      <div className={styles.glow} ref={glowRef} />
-      <div className={styles.imageFrame} ref={imageFrameRef}>
-        <Image
-          alt=""
-          className={styles.image}
-          draggable={false}
-          fill
-          loading="lazy"
-          sizes="(max-width: 639px) 168vw, (max-width: 1023px) 46rem, (max-width: 1279px) 44rem, (max-width: 1535px) 54vw, 66rem"
-          src={LYCORIS_SRC}
-        />
+      <div className={styles.parallaxLayer} ref={parallaxLayerRef}>
+        <div className={styles.glow} ref={glowRef} />
+        <div className={styles.imageFrame} ref={imageFrameRef}>
+          <Image
+            alt=""
+            className={styles.image}
+            draggable={false}
+            fill
+            loading="eager"
+            sizes="(max-width: 639px) 168vw, (max-width: 1023px) 46rem, (max-width: 1279px) 44rem, (max-width: 1535px) 54vw, 66rem"
+            src={LYCORIS_SRC}
+          />
+        </div>
       </div>
     </div>
   );

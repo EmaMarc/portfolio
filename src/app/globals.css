@@ -38,6 +38,113 @@ a {
   color: var(--foreground);
 }
 
+.hero-name-motion {
+  display: block;
+  height: 1.34em;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  width: min(100%, 14ch);
+}
+
+.hero-name-motion__track {
+  display: flex;
+  flex-direction: column;
+  height: 300%;
+  transform: translateY(0);
+}
+
+.hero-name-motion__slot {
+  align-items: center;
+  color: inherit;
+  display: flex;
+  flex: 0 0 33.333333%;
+  font-weight: inherit;
+  justify-content: flex-start;
+  line-height: inherit;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hero-name-motion__text {
+  display: block;
+  max-width: 100%;
+}
+
+.hero-name-motion__text--short {
+  white-space: nowrap;
+}
+
+.hero-name-motion__text--formal {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8em;
+  gap: 0;
+  letter-spacing: -0.012em;
+  line-height: 0.76;
+  transform: translateY(-0.055em);
+}
+
+.hero-name-motion__formal-word {
+  display: block;
+}
+
+@media (min-width: 410px) {
+  .hero-name-motion__text--formal {
+    flex-direction: row;
+    font-size: 0.78em;
+    gap: 0.15em;
+    line-height: inherit;
+    transform: none;
+    white-space: nowrap;
+  }
+}
+
+.hero-role-focus__item {
+  color: rgb(161 161 170);
+  display: inline-block;
+  font-weight: 390;
+  letter-spacing: 0.012em;
+}
+
+.hero-role-focus__item--frontend {
+  color: rgb(244 244 245);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+@media (min-width: 640px) {
+  .hero-name-motion {
+    height: 0.82em;
+  }
+
+  .hero-name-motion__slot {
+    align-items: flex-end;
+  }
+
+  .hero-name-motion__text--formal {
+    flex-direction: row;
+    font-size: 0.72em;
+    gap: 0.16em;
+    line-height: inherit;
+    transform: none;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-name-motion__text--formal {
+    font-size: 0.76em;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-name-motion__text--formal {
+    font-size: 0.82em;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
@@ -72,6 +179,110 @@ a {
     [data-reveal-delay="short"][data-revealed="true"] {
     transition-delay: 80ms;
   }
+
+  .hero-name-motion__track {
+    animation: heroNameTrack 11.2s cubic-bezier(0.22, 1, 0.36, 1) 1.3s
+      infinite both;
+  }
+
+  .hero-role-focus__item--frontend {
+    animation: heroRoleFocusFrontend 10.8s cubic-bezier(0.22, 1, 0.36, 1)
+      2.1s infinite both;
+  }
+
+  .hero-role-focus__item--full-stack {
+    animation: heroRoleFocusFullStack 10.8s cubic-bezier(0.22, 1, 0.36, 1)
+      2.1s infinite both;
+  }
+
+  .hero-role-focus__item--web-mobile {
+    animation: heroRoleFocusWebMobile 10.8s cubic-bezier(0.22, 1, 0.36, 1)
+      2.1s infinite both;
+  }
+}
+
+@keyframes heroNameTrack {
+  0%,
+  40% {
+    transform: translateY(0);
+  }
+
+  46%,
+  68% {
+    transform: translateY(-33.333333%);
+  }
+
+  74%,
+  100% {
+    transform: translateY(-66.666667%);
+  }
+}
+
+@keyframes heroRoleFocusFrontend {
+  0%,
+  28% {
+    color: rgb(244 244 245);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  34%,
+  94% {
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
+
+  100% {
+    color: rgb(244 244 245);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+}
+
+@keyframes heroRoleFocusFullStack {
+  0%,
+  28% {
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
+
+  34%,
+  61% {
+    color: rgb(244 244 245);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  67%,
+  100% {
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
+}
+
+@keyframes heroRoleFocusWebMobile {
+  0%,
+  61% {
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
+
+  67%,
+  94% {
+    color: rgb(244 244 245);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  100% {
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -80,5 +291,23 @@ a {
     opacity: 1;
     transition: none;
     transform: none;
+  }
+
+  .hero-name-motion__track {
+    animation: none;
+    transform: translateY(0);
+  }
+
+  .hero-role-focus__item {
+    animation: none;
+    color: rgb(161 161 170);
+    font-weight: 390;
+    letter-spacing: 0.012em;
+  }
+
+  .hero-role-focus__item--frontend {
+    color: rgb(244 244 245);
+    font-weight: 500;
+    letter-spacing: 0;
   }
 }

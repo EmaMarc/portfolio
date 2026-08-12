@@ -1,4 +1,13 @@
 import Image from "next/image";
+import {
+  ArrowUpIcon,
+  CertificateIcon,
+  CopyrightIcon,
+  ExternalLinkIcon,
+  GitHubLogo,
+  LinkedInLogo,
+  MailIcon,
+} from "@/components/icons/portfolio-icons";
 import { BackendEvidenceSurface } from "@/components/sections/backend-evidence-surface";
 import { BackendLiveApiSurface } from "@/components/sections/backend-live-api-surface";
 import { ProjectVideoPreview } from "@/components/sections/project-video-preview";
@@ -41,6 +50,7 @@ const copy = {
     additionalContributions: "Contribuciones adicionales",
     backend: "Backend",
     backendRepository: "Repositorio backend",
+    backToTop: "Volver arriba",
     certificate: "Certificado",
     contact: "Contacto",
     contactChannels: "Canales",
@@ -90,6 +100,7 @@ const copy = {
     additionalContributions: "Additional contributions",
     backend: "Backend",
     backendRepository: "Backend repository",
+    backToTop: "Back to top",
     certificate: "Certificate",
     contact: "Contact",
     contactChannels: "Channels",
@@ -139,15 +150,17 @@ const copy = {
 const heroCopy = {
   es: {
     intro:
-      "Construyo productos web y mobile que combinan interfaces claras, integraciones sólidas y código mantenible.",
-    role: "Frontend / Full Stack Developer",
+      "Construyo interfaces pixel-perfect y productos donde cada detalle tiene una razón.",
+    roleLabel: "Developer",
   },
   en: {
     intro:
-      "I build web and mobile products that combine clear interfaces, solid integrations, and maintainable code.",
-    role: "Frontend / Full Stack Developer",
+      "I build pixel-perfect interfaces and products where every detail has a purpose.",
+    roleLabel: "Developer",
   },
-} satisfies Record<Locale, Record<"intro" | "role", string>>;
+} satisfies Record<Locale, Record<"intro" | "roleLabel", string>>;
+
+const heroRoles = ["Frontend", "Full Stack", "Web & Mobile"] as const;
 
 const aboutStoryCopy = {
   es: {
@@ -399,6 +412,32 @@ function getProjectLinks(
   });
 }
 
+function isProjectLinkIconBefore(linkKey: LinkKey) {
+  return linkKey !== "live";
+}
+
+function ProjectLinkIcon({
+  className,
+  linkKey,
+}: {
+  className: string;
+  linkKey: LinkKey;
+}) {
+  if (linkKey === "live") {
+    return <ExternalLinkIcon className={className} />;
+  }
+
+  if (linkKey === "linkedinPost") {
+    return <LinkedInLogo className={className} />;
+  }
+
+  if (linkKey === "certificate") {
+    return <CertificateIcon className={className} />;
+  }
+
+  return <GitHubLogo className={className} />;
+}
+
 function getProjectMediaCta(project: Project) {
   const contextualCta = project.media?.contextualCta;
 
@@ -555,11 +594,13 @@ function EvidenceSurface({
 function ProjectLinks({
   className = "",
   hiddenLinkKeys,
+  iconSizeClass = "size-4",
   locale,
   project,
 }: {
   className?: string;
   hiddenLinkKeys?: readonly LinkKey[];
+  iconSizeClass?: string;
   locale: Locale;
   project: Project;
 }) {
@@ -571,22 +612,38 @@ function ProjectLinks({
 
   return (
     <ul className={`flex flex-wrap gap-2 ${className}`}>
-      {links.map((link) => (
-        <li key={link.key}>
-          <a
-            className="inline-flex min-h-9 items-center border-b border-white/20 text-sm font-medium text-zinc-200 transition-colors hover:border-white/50 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
-            href={link.href}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <span>{getLinkLabel(link.key, locale, project)}</span>
-            <span aria-hidden="true" className="ml-1 text-zinc-500">
-              ↗
-            </span>
-            <span className="sr-only">, {copy[locale].externalSuffix}</span>
-          </a>
-        </li>
-      ))}
+      {links.map((link) => {
+        const isIconBefore = isProjectLinkIconBefore(link.key);
+        const iconClassName = `${iconSizeClass} shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300`;
+
+        return (
+          <li className="max-w-full" key={link.key}>
+            <a
+              className="group inline-flex min-h-9 max-w-full items-center gap-2 border-b border-white/20 text-sm font-medium text-zinc-200 transition-colors hover:border-white/50 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+              href={link.href}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {isIconBefore ? (
+                <ProjectLinkIcon
+                  className={iconClassName}
+                  linkKey={link.key}
+                />
+              ) : null}
+              <span className="min-w-0">
+                {getLinkLabel(link.key, locale, project)}
+              </span>
+              {!isIconBefore ? (
+                <ProjectLinkIcon
+                  className={iconClassName}
+                  linkKey={link.key}
+                />
+              ) : null}
+              <span className="sr-only">, {copy[locale].externalSuffix}</span>
+            </a>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -818,7 +875,11 @@ function OtherProjectCard({
         <TechnologyList items={project.technologies} variant="compact" />
       </div>
       <div className="mt-5">
-        <ProjectLinks locale={locale} project={project} />
+        <ProjectLinks
+          iconSizeClass="size-3.5"
+          locale={locale}
+          project={project}
+        />
       </div>
     </article>
   );
@@ -971,15 +1032,13 @@ function WorkSection({ locale }: { locale: Locale }) {
             </div>
             {profile.links?.github ? (
               <a
-                className="inline-flex min-h-11 items-center rounded-full border border-white/10 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-white/25 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+                className="group inline-flex min-h-11 items-center gap-2 rounded-full border border-white/10 px-4 text-sm font-medium text-zinc-200 transition-colors hover:border-white/25 hover:bg-white/10 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
                 href={profile.links.github}
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                {labels.moreOnGithub}
-                <span aria-hidden="true" className="ml-1 text-zinc-500">
-                  ↗
-                </span>
+                <GitHubLogo className="size-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300" />
+                <span>{labels.moreOnGithub}</span>
                 <span className="sr-only">, {labels.externalSuffix}</span>
               </a>
             ) : null}
@@ -1365,15 +1424,13 @@ function AboutContactSection({ locale }: { locale: Locale }) {
                 ))}
               </ol>
               <a
-                className="mt-4 inline-flex min-h-9 items-center border-b border-white/10 text-sm font-medium text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                className="group mt-4 inline-flex min-h-9 items-center gap-2 border-b border-white/10 text-sm font-medium text-zinc-500 transition-colors hover:border-white/30 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
                 href={moreCertificationsUrl}
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                {labels.moreCertifications}
-                <span aria-hidden="true" className="ml-1 text-zinc-500">
-                  ↗
-                </span>
+                <CertificateIcon className="size-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300" />
+                <span>{labels.moreCertifications}</span>
                 <span className="sr-only">, {labels.externalSuffix}</span>
               </a>
             </section>
@@ -1421,11 +1478,9 @@ function ContactSection({ locale }: { locale: Locale }) {
                 className="group inline-block max-w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
                 href={`mailto:${profile.email}`}
               >
-                <span className="inline-flex max-w-full items-baseline gap-3 whitespace-nowrap border-b border-white/[0.18] pb-3 text-[clamp(1.5rem,7vw,1.875rem)] font-medium leading-tight tracking-normal text-zinc-100 transition-colors group-hover:border-white/45 group-hover:text-zinc-50 sm:text-4xl lg:text-5xl">
+                <span className="inline-flex max-w-full items-center gap-3 whitespace-nowrap border-b border-white/[0.18] pb-3 text-[clamp(1.5rem,7vw,1.875rem)] font-medium leading-tight tracking-normal text-zinc-100 transition-colors group-hover:border-white/45 group-hover:text-zinc-50 sm:text-4xl lg:text-5xl">
+                  <MailIcon className="size-[1.125rem] shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300" />
                   <span>{labels.emailCta}</span>
-                  <span aria-hidden="true" className="text-zinc-500">
-                    ↗
-                  </span>
                 </span>
                 <span className="mt-3 block max-w-full whitespace-nowrap font-mono text-[0.6875rem] leading-5 tracking-[0.01em] text-zinc-500 transition-colors group-hover:text-zinc-400 sm:text-xs sm:tracking-[0.04em]">
                   {profile.email}
@@ -1445,15 +1500,13 @@ function ContactSection({ locale }: { locale: Locale }) {
                 <li>
                   <a
                     aria-label={`${labels.linkedin}, ${labels.externalSuffix}`}
-                    className="flex min-h-11 items-center justify-between gap-4 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                    className="group flex min-h-11 items-center gap-2.5 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
                     href={profile.links.linkedin}
                     rel="noopener noreferrer"
                     target="_blank"
                   >
+                    <LinkedInLogo className="size-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300" />
                     <span>{labels.linkedin}</span>
-                    <span aria-hidden="true" className="text-zinc-500">
-                      ↗
-                    </span>
                   </a>
                 </li>
               ) : null}
@@ -1461,15 +1514,13 @@ function ContactSection({ locale }: { locale: Locale }) {
                 <li>
                   <a
                     aria-label={`${labels.github}, ${labels.externalSuffix}`}
-                    className="flex min-h-11 items-center justify-between gap-4 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+                    className="group flex min-h-11 items-center gap-2.5 border-b border-white/[0.08] py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/30 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
                     href={profile.links.github}
                     rel="noopener noreferrer"
                     target="_blank"
                   >
+                    <GitHubLogo className="size-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300 group-focus-visible:text-zinc-300" />
                     <span>{labels.github}</span>
-                    <span aria-hidden="true" className="text-zinc-500">
-                      ↗
-                    </span>
                   </a>
                 </li>
               ) : null}
@@ -1488,7 +1539,7 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
 
   return (
     <footer className="mx-auto w-full max-w-6xl border-t border-white/[0.08] px-4 py-8 sm:px-6 lg:px-8">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-end sm:gap-6">
         <div>
           <p className="text-sm font-semibold tracking-normal text-zinc-300">
             Ema Marc
@@ -1500,12 +1551,24 @@ function PortfolioFooter({ locale }: { locale: Locale }) {
           ) : null}
         </div>
 
+        <a
+          className="inline-flex min-h-9 w-fit items-center gap-1.5 font-mono text-xs font-medium tracking-[0.06em] text-zinc-500 transition-colors hover:text-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+          href="#top"
+        >
+          <span>{labels.backToTop}</span>
+          <ArrowUpIcon className="size-3.5 shrink-0" />
+        </a>
+
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs tracking-[0.06em] text-zinc-500 sm:justify-end">
           <span>
             <span className="sr-only">{labels.currentLanguage}: </span>
             {locale.toUpperCase()}
           </span>
-          <span>© {copyrightYear} Emanuel Marcello</span>
+          <span className="inline-flex items-center gap-1.5">
+            <span className="sr-only">Copyright </span>
+            <CopyrightIcon className="size-3.5 shrink-0" />
+            <span>{copyrightYear} Emanuel Marcello</span>
+          </span>
         </div>
       </div>
     </footer>
@@ -1518,46 +1581,166 @@ function HeroSection({ locale }: { locale: Locale }) {
 
   return (
     <section
-      className="mx-auto flex min-h-svh w-full max-w-6xl flex-col justify-center px-4 pb-16 pt-20 sm:px-6 lg:grid lg:grid-cols-[minmax(0,0.5fr)_minmax(0,0.5fr)] lg:content-start lg:items-start lg:gap-16 lg:px-8 lg:pb-20 lg:pt-[24svh] xl:gap-20"
+      className="relative mx-auto grid min-h-svh w-full max-w-6xl content-center px-4 pb-16 pt-24 sm:px-6 lg:grid-cols-[minmax(0,0.66fr)_minmax(0,0.34fr)] lg:content-start lg:items-start lg:gap-x-8 lg:px-8 lg:pb-20 lg:pt-[19svh] xl:max-w-7xl xl:grid-cols-[minmax(0,0.7fr)_minmax(0,0.3fr)]"
       id="top"
     >
       <div
-        className="max-w-4xl lg:max-w-[35rem]"
+        className="relative z-10 max-w-5xl lg:col-span-2 lg:max-w-[76rem]"
         data-reveal=""
         data-reveal-target="hero-copy"
       >
-        <p className="text-base font-medium text-zinc-300">
-          {hero.role}
-        </p>
-        <h1 className="mt-5 font-brand text-5xl font-[380] tracking-normal text-zinc-50 sm:text-6xl lg:text-7xl">
-          Ema Marc
+        <h1
+          aria-label="Emanuel Marcello, Ema Marc"
+          className="max-w-[14ch] font-brand text-[4.55rem] font-[380] leading-[0.8] tracking-[-0.01em] text-zinc-50 sm:text-[6.6rem] md:text-[8rem] lg:text-[9.75rem] lg:tracking-[-0.015em] xl:text-[11.5rem]"
+        >
+          <span aria-hidden="true" className="hero-name-motion">
+            <span className="hero-name-motion__track">
+              <span className="hero-name-motion__slot hero-name-motion__slot--short">
+                <span className="hero-name-motion__text hero-name-motion__text--short">
+                  Ema Marc
+                </span>
+              </span>
+              <span className="hero-name-motion__slot hero-name-motion__slot--formal">
+                <span className="hero-name-motion__text hero-name-motion__text--formal">
+                  <span className="hero-name-motion__formal-word">Emanuel</span>
+                  <span className="hero-name-motion__formal-word">Marcello</span>
+                </span>
+              </span>
+              <span className="hero-name-motion__slot hero-name-motion__slot--short">
+                <span className="hero-name-motion__text hero-name-motion__text--short">
+                  Ema Marc
+                </span>
+              </span>
+            </span>
+          </span>
         </h1>
-        <p className="mt-7 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg sm:leading-8">
+        <div className="mt-7 flex flex-col gap-2.5 font-brand text-zinc-300 sm:mt-8 sm:flex-row sm:items-baseline sm:gap-5 lg:mt-9">
+          <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.22em] text-zinc-500 sm:text-xs">
+            {hero.roleLabel}
+          </p>
+          <p className="flex flex-wrap items-baseline gap-x-3 gap-y-2 text-2xl leading-none sm:text-3xl lg:text-[2.1rem]">
+            <span
+              className="hero-role-focus__item hero-role-focus__item--frontend"
+              data-hero-role="frontend"
+            >
+              {heroRoles[0]}
+            </span>
+            <span aria-hidden="true" className="text-zinc-600">
+              ·
+            </span>
+            <span
+              className="hero-role-focus__item hero-role-focus__item--full-stack"
+              data-hero-role="full-stack"
+            >
+              {heroRoles[1]}
+            </span>
+            <span aria-hidden="true" className="text-zinc-600">
+              ·
+            </span>
+            <span
+              className="hero-role-focus__item hero-role-focus__item--web-mobile"
+              data-hero-role="web-mobile"
+            >
+              {heroRoles[2]}
+            </span>
+          </p>
+        </div>
+        <p className="mt-8 max-w-[44rem] text-xl leading-8 text-zinc-300 sm:text-[1.45rem] sm:leading-9 lg:mt-10 lg:max-w-[48rem]">
           {hero.intro}
         </p>
-        <div className="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:gap-8">
+        <div className="mt-11 flex w-full max-w-[38rem] flex-col items-start gap-5 sm:mt-12 sm:flex-row sm:items-center sm:gap-7 lg:mt-14">
           <a
-            className="group inline-flex min-h-11 items-center border-b border-white/[0.2] pb-2 text-base font-semibold text-zinc-100 transition-colors hover:border-white/50 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+            className="group inline-flex min-h-12 w-full max-w-[22rem] items-center gap-4 pb-2 text-lg font-semibold text-zinc-100 transition-colors hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 sm:w-[22rem]"
             href="#work"
           >
-            {labels.primaryCta}
+            <span className="shrink-0">{labels.primaryCta}</span>
             <span
               aria-hidden="true"
-              className="ml-2 text-zinc-500 motion-safe:transition-transform motion-safe:duration-200 group-hover:text-zinc-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:translate-y-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-safe:group-focus-visible:translate-y-0.5"
+              className="pointer-events-none relative h-3 min-w-16 flex-1"
             >
-              ↘
+              <span className="absolute inset-0 text-white/28">
+                <span className="absolute left-0 right-3 top-1/2 h-[1.5px] bg-current" />
+                <svg
+                  aria-hidden="true"
+                  className="absolute right-0 top-1/2 h-3 w-3 -translate-y-px"
+                  fill="none"
+                  focusable="false"
+                  viewBox="0 0 12 12"
+                >
+                  <path
+                    d="M0 1 L9 10 M4.5 10 H9 V5.5"
+                    stroke="currentColor"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1.4"
+                  />
+                </svg>
+              </span>
+              <span className="absolute inset-0 origin-left scale-x-0 text-[rgba(220,38,38,0.78)] transition-transform duration-[220ms] ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100">
+                <span className="absolute left-0 right-3 top-1/2 h-[1.5px] bg-current" />
+                <svg
+                  aria-hidden="true"
+                  className="absolute right-0 top-1/2 h-3 w-3 -translate-y-px"
+                  fill="none"
+                  focusable="false"
+                  viewBox="0 0 12 12"
+                >
+                  <path
+                    d="M0 1 L9 10 M4.5 10 H9 V5.5"
+                    stroke="currentColor"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1.4"
+                  />
+                </svg>
+              </span>
             </span>
           </a>
           <a
-            className="group inline-flex min-h-11 items-center border-b border-white/[0.12] pb-2 text-base font-medium text-zinc-300 transition-colors hover:border-white/35 hover:text-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100"
+            className="group inline-flex min-h-12 w-full max-w-[14.5rem] items-center gap-4 pb-2 text-lg font-medium text-zinc-400 transition-colors hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-100 sm:w-[14.5rem]"
             href="#contact"
           >
-            {labels.secondaryCta}
+            <span className="shrink-0">{labels.secondaryCta}</span>
             <span
               aria-hidden="true"
-              className="ml-2 text-zinc-500 motion-safe:transition-transform motion-safe:duration-200 group-hover:text-zinc-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-focus-visible:translate-x-0.5 motion-safe:group-focus-visible:-translate-y-0.5"
+              className="pointer-events-none relative h-3 min-w-12 flex-1"
             >
-              ↗
+              <span className="absolute inset-0 text-white/18">
+                <span className="absolute left-0 right-3 top-1/2 h-[1.5px] bg-current" />
+                <svg
+                  aria-hidden="true"
+                  className="absolute right-0 top-1/2 h-3 w-3 -translate-y-px"
+                  fill="none"
+                  focusable="false"
+                  viewBox="0 0 12 12"
+                >
+                  <path
+                    d="M0 1 L9 10 M4.5 10 H9 V5.5"
+                    stroke="currentColor"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1.4"
+                  />
+                </svg>
+              </span>
+              <span className="absolute inset-0 origin-left scale-x-0 text-[rgba(220,38,38,0.78)] transition-transform duration-[220ms] ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100">
+                <span className="absolute left-0 right-3 top-1/2 h-[1.5px] bg-current" />
+                <svg
+                  aria-hidden="true"
+                  className="absolute right-0 top-1/2 h-3 w-3 -translate-y-px"
+                  fill="none"
+                  focusable="false"
+                  viewBox="0 0 12 12"
+                >
+                  <path
+                    d="M0 1 L9 10 M4.5 10 H9 V5.5"
+                    stroke="currentColor"
+                    strokeLinecap="square"
+                    strokeLinejoin="miter"
+                    strokeWidth="1.4"
+                  />
+                </svg>
+              </span>
             </span>
           </a>
         </div>

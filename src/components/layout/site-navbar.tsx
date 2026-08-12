@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -20,6 +21,11 @@ const activeSectionRootMargin = "-43% 0px -56% 0px";
 const currentSectionLinkClass =
   "text-white [text-shadow:0_0_8px_rgba(220,38,38,0.45)] after:scale-x-100 after:bg-[rgba(220,38,38,0.96)] hover:text-white hover:after:bg-[rgba(220,38,38,0.96)]";
 const brandTextClass = "font-brand font-normal";
+const lycorisNavbarMark = {
+  height: 128,
+  src: "/brand/lycoris/lycoris-navbar-175x128.png",
+  width: 175,
+} as const;
 const menuItemOpenDelayClasses = [
   "delay-[70ms]",
   "delay-[105ms]",
@@ -81,14 +87,17 @@ function getLocalizedHref(locale: Locale, hash: string) {
   return `/${locale}${hash}`;
 }
 
-function LogoSlot() {
+function LycorisBrandMark({ className }: { className: string }) {
   return (
-    <span
+    <Image
+      alt=""
       aria-hidden="true"
-      className="grid size-7 shrink-0 place-items-center text-[0.58rem] font-semibold tracking-[0.12em] text-zinc-500"
-    >
-      EM
-    </span>
+      className={`shrink-0 opacity-100 ${className}`}
+      height={lycorisNavbarMark.height}
+      src={lycorisNavbarMark.src}
+      unoptimized
+      width={lycorisNavbarMark.width}
+    />
   );
 }
 
@@ -369,14 +378,14 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
             }}
           >
             <Link
-              className={`inline-flex min-h-14 shrink-0 items-center gap-3 whitespace-nowrap border-b bg-transparent text-sm font-semibold tracking-[0.08em] text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100 ${surfaceTransitionClass} ${
+              className={`inline-flex min-h-14 shrink-0 items-center gap-2 whitespace-nowrap border-b bg-transparent text-sm font-semibold tracking-[0.08em] text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100 ${surfaceTransitionClass} ${
                 isAtTop
                   ? "border-white/[0.1] px-1 pr-10"
                   : "border-white/[0.14] px-1 pr-8"
               }`}
               href={getLocalizedHref(locale, "#top")}
             >
-              <LogoSlot />
+              <LycorisBrandMark className="h-auto w-[38px]" />
               <span className={brandTextClass}>Ema Marc</span>
             </Link>
           </div>
@@ -439,9 +448,10 @@ export function SiteNavbar({ locale }: SiteNavbarProps) {
             }`}
           >
             <Link
-              className="inline-flex min-h-11 items-center px-1 text-base font-semibold tracking-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+              className="inline-flex min-h-11 items-center gap-2 px-1 text-base font-semibold tracking-normal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
               href={getLocalizedHref(locale, "#top")}
             >
+              <LycorisBrandMark className="h-auto w-[34px]" />
               <span className={brandTextClass}>Ema Marc</span>
             </Link>
 

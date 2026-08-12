@@ -1,14 +1,29 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   getBrowserPreferredLocale,
   isSupportedLocale,
   localeStorageKey,
 } from "@/lib/locale";
 import type { Locale } from "@/content/portfolio";
+import styles from "./locale-redirect.module.css";
+
+const lycorisLoaderMark = {
+  height: 128,
+  src: "/brand/lycoris/lycoris-navbar-175x128.png",
+  width: 175,
+} as const;
+const minimumLoaderDuration = 2000;
+const loaderExitDuration = 250;
+
+type LocaleRedirectTarget = {
+  hash: string;
+  locale: Locale;
+};
 
 function getStoredLocale(): Locale | null {
   try {
@@ -28,22 +43,81 @@ function getNavigatorLanguages() {
   return [navigator.language];
 }
 
+function resolveLocaleRedirectTarget(): LocaleRedirectTarget {
+  return {
+    hash: window.location.hash,
+    locale: getStoredLocale() ?? getBrowserPreferredLocale(getNavigatorLanguages()),
+  };
+}
+
 export function LocaleRedirect() {
   const router = useRouter();
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    const locale = getStoredLocale() ?? getBrowserPreferredLocale(getNavigatorLanguages());
-    const hash = window.location.hash;
+    let isCancelled = false;
+    const timers: number[] = [];
 
-    router.replace(`/${locale}${hash}`);
+    const wait = (duration: number) =>
+      new Promise<void>((resolve) => {
+        const timer = window.setTimeout(resolve, duration);
+
+        timers.push(timer);
+      });
+
+    const resolveLanguage = async () => resolveLocaleRedirectTarget();
+
+    void Promise.all([resolveLanguage(), wait(minimumLoaderDuration)]).then(
+      ([target]) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setIsExiting(true);
+
+        const exitTimer = window.setTimeout(() => {
+          if (!isCancelled) {
+            router.replace(`/${target.locale}${target.hash}`);
+          }
+        }, loaderExitDuration);
+
+        timers.push(exitTimer);
+      },
+    );
+
+    return () => {
+      isCancelled = true;
+
+      timers.forEach((timer) => {
+        window.clearTimeout(timer);
+      });
+    };
   }, [router]);
 
   return (
-    <main className="grid min-h-svh place-items-center px-6 text-center">
-      <div>
-        <p className="text-sm font-medium uppercase tracking-[0.24em] text-zinc-400">
-          Resolving language
+    <main
+      aria-busy={!isExiting}
+      className={`grid min-h-svh place-items-center px-6 text-center ${
+        styles.loader
+      } ${isExiting ? styles.loaderExit : ""}`}
+    >
+      <div className={styles.loaderStack}>
+        <Image
+          alt=""
+          aria-hidden="true"
+          className={styles.loaderMark}
+          height={lycorisLoaderMark.height}
+          loading="eager"
+          src={lycorisLoaderMark.src}
+          unoptimized
+          width={lycorisLoaderMark.width}
+        />
+        <p aria-live="polite" className={styles.loaderText} role="status">
+          RESOLVING LANGUAGE
         </p>
+        <div aria-hidden="true" className={styles.progressTrack}>
+          <span className={styles.progressFill} />
+        </div>
         <noscript>
           <p className="mt-4 text-sm text-zinc-300">
             JavaScript is required for automatic language detection.
