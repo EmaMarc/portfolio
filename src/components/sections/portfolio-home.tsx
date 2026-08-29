@@ -13,6 +13,7 @@ import { BackendLiveApiSurface } from "@/components/sections/backend-live-api-su
 import { ProjectVideoPreview } from "@/components/sections/project-video-preview";
 import { PortraitContactMotion } from "@/components/sections/portrait-contact-motion";
 import { RevealObserver } from "@/components/sections/reveal-observer";
+import { WinterSection } from "@/components/sections/winter-section";
 import {
   experiences,
   profile,
@@ -1759,6 +1760,7 @@ export function PortfolioHome({ locale }: PortfolioHomeProps) {
       data-reveal-root=""
     >
       <HeroSection locale={locale} />
+      <WinterSection locale={locale} />
       <WorkSection locale={locale} />
       <ExperienceSection locale={locale} />
       <AboutContactSection locale={locale} />

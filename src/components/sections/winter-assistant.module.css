@@ -1,0 +1,74 @@
+.thinkingMessage {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.thinkingDot {
+  display: inline-block;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.thinkingDotOne {
+  opacity: 1;
+}
+
+.thinkingDotTwo {
+  animation: winter-thinking-dot-two 1200ms steps(1, end) infinite;
+}
+
+.thinkingDotThree {
+  animation: winter-thinking-dot-three 1200ms steps(1, end) infinite;
+}
+
+.answerEnter {
+  animation: winter-answer-enter 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes winter-thinking-dot-two {
+  0%,
+  32% {
+    opacity: 0;
+  }
+
+  33%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes winter-thinking-dot-three {
+  0%,
+  65% {
+    opacity: 0;
+  }
+
+  66%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes winter-answer-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinkingDot,
+  .answerEnter {
+    animation: none;
+  }
+
+  .thinkingDot {
+    opacity: 1;
+    will-change: auto;
+  }
+}

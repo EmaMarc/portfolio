@@ -94,7 +94,8 @@ npm run lint
 npm run build
 ```
 
-No environment variables are required for the portfolio to run locally.
+Winter AI requires a Google Gemini Developer API key for local model calls.
+Configure `GOOGLE_GENERATIVE_AI_API_KEY`.
 
 ## Languages
 
